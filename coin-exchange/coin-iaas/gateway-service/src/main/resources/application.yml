@@ -17,30 +17,31 @@ spring:
           uri: lb://admin-service   # 转发到那个目的地
           predicates:
             - Path=/admin/**
-          filters:
-            - StripPrefix=1 # 当前端访问/admin/login - >login 将admin自动的去掉
-        - id: member-service_router
-          uri: lb://member-service   # 转发到那个目的地
-          predicates:
-            - Path=/user/**
-          filters:
-            - StripPrefix=1 # 当前端访问/user/login - >login 将user自动的去掉
-        - id: finance-service_router
-          uri: lb://finance-service   # 转发到那个目的地
-          predicates:
-            - Path=/finance/**
-          filters:
-            - StripPrefix=1 # 当前端访问/finance/xx,去掉finance
-        - id: exchange-service_router # 交易系统的路由
-          uri: lb://exchange-service   # 转发到那个目的地
-          predicates:
-            - Path=/exchange/**
-          filters:
-            - StripPrefix=1 # 当前端访问/exchange/xx,exchange
         - id: test_router
           uri: http://www.aliyun.com
           predicates:
             - Path=/product
             # /test->http://www.baidu.com 网关自己内部会构建请求去访问我们要访问的地址 GET:http://www.baidu.com/test
       # 通过网关来完成对2 种维度的限流： 网关维度 + API 分组
+    sentinel:
+      transport:
+        dashboard: sentinel-server:8858
+      datasource:
+        ds1.nacos:
+          serverAddr: nacos-server:8848
+          dataId: gw-flow
+          ruleType: gw_flow
+        ds2.nacos:
+          serverAddr: nacos-server:8848
+          dataId: api-group
+          ruleType: gw_api_group
+    #        ds1.file:
+#          file: classpath:gw-flow.json # 网关 + API分组的限流
+#          ruleType: gw_flow
+#        ds2.file:
+#          file: classpath:api-group.json
+#          ruleType: gw_api_group
+       #使用nacos做持久化配置
+
+
 
