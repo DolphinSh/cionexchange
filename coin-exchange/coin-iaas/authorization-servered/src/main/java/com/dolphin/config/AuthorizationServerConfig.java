@@ -2,7 +2,7 @@ package com.dolphin.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,7 +11,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 //开启授权服务器的功能
 @EnableAuthorizationServer
@@ -26,8 +28,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    //@Autowired
+    //private RedisConnectionFactory redisConnectionFactory;
     /**
      * 添加第三方的客户端
      */
@@ -48,11 +50,27 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .tokenStore(redisTokenStore());//tokenStore 存储
+                //.tokenStore(redisTokenStore());//tokenStore 存储
+                .tokenStore(jwtTokenStore())
+                .tokenEnhancer(jwtAccessTokenConverter());
         super.configure(endpoints);
     }
 
-    public TokenStore redisTokenStore(){
-        return new RedisTokenStore(redisConnectionFactory);
+    private TokenStore jwtTokenStore() {
+        JwtTokenStore jwtTokenStore = new JwtTokenStore(jwtAccessTokenConverter());
+        return jwtTokenStore;
     }
+    private JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
+        //读取classpath下面的密钥文件
+        ClassPathResource resource = new ClassPathResource("coinexchange.jks");
+        //获取 KeyStoreFactory
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(resource, "coinexchange".toCharArray());
+        //给 JwtAccessTokenConverter 设置一个密钥对
+        tokenConverter.setKeyPair(keyStoreKeyFactory.getKeyPair("coinexchange","coinexchange".toCharArray()));
+        return tokenConverter;
+    }
+    /*public TokenStore redisTokenStore(){
+        return new RedisTokenStore(redisConnectionFactory);
+    }*/
 }

@@ -42,6 +42,8 @@ spring:
 #          file: classpath:api-group.json
 #          ruleType: gw_api_group
        #使用nacos做持久化配置
-
-
+  redis:
+    host: redis-server
+    port: 6380
+    password: 123456
 
