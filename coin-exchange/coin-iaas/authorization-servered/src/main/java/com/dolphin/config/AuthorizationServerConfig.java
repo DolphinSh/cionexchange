@@ -84,4 +84,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     /*public TokenStore redisTokenStore(){
         return new RedisTokenStore(redisConnectionFactory);
     }*/
+
 }
