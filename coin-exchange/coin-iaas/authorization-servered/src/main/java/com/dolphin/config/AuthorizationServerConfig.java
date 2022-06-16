@@ -31,6 +31,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     //@Autowireddd
     //private RedisConnectionFactory redisConnectionFactory;
+
     /**
      * 添加第三方的客户端
      */
@@ -40,10 +41,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient("coin-api")//第三方客户端的名称
                 .secret(passwordEncoder.encode("coin-secret"))//第三方客户端的密钥
                 .scopes("all")//第三方客户端的授权范围
-                .accessTokenValiditySeconds(3600)//获取token的有效期
-                .refreshTokenValiditySeconds(7*3600);//refreshToken的有效期
+                .authorizedGrantTypes("password", "refresh_token")
+                .accessTokenValiditySeconds(7 * 24 * 3600)//设置token的有效期
+                .refreshTokenValiditySeconds(30 * 24 * 3600);//refreshToken的有效期
         super.configure(clients);
     }
+
     /**
      * 配置验证管理器
      */
@@ -61,6 +64,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         JwtTokenStore jwtTokenStore = new JwtTokenStore(jwtAccessTokenConverter());
         return jwtTokenStore;
     }
+
     private JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
         //读取classpath下面的密钥文件
@@ -68,7 +72,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         //获取 KeyStoreFactory
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(resource, "coinexchange".toCharArray());
         //给 JwtAccessTokenConverter 设置一个密钥对
-        tokenConverter.setKeyPair(keyStoreKeyFactory.getKeyPair("coinexchange","coinexchange".toCharArray()));
+        tokenConverter.setKeyPair(keyStoreKeyFactory.getKeyPair("coinexchange", "coinexchange".toCharArray()));
         return tokenConverter;
     }
     /*public TokenStore redisTokenStore(){

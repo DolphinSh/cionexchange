@@ -45,6 +45,10 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
 
         UserDetails userDetails = null;
         try {
+            String grant_type = requestAttributes.getRequest().getParameter("grant_type");//refresh_token进行纠正
+            if (LoginConstant.REFRESH_TYPE.equals(grant_type.toUpperCase())){
+                username = adjustUsername(username,loginType);
+            }
             switch (loginType) {
                 case LoginConstant.ADMIN_TYPE:
                     userDetails = loadSysUserByUsername(username);
@@ -59,6 +63,24 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
             e.printStackTrace();
         }
         return userDetails;
+    }
+
+    /**
+     * 纠正用户的名称
+     * @param username 用户的id
+     * @param loginType admin_type member_type
+     * @return
+     */
+    private String adjustUsername(String username, String loginType) {
+        if (LoginConstant.ADMIN_TYPE.equals(loginType)){
+            //管理员的纠正方式
+            return jdbcTemplate.queryForObject(LoginConstant.QUERY_ADMIN_USER_WITH_ID,String.class,username);
+        }
+        if (LoginConstant.MEMBER_TYPE.equals(loginType)) {
+            //会员的纠正方式
+            return jdbcTemplate.queryForObject(LoginConstant.QUERY_MEMBER_USER_WITH_ID,String.class,username);
+        }
+        return username;
     }
 
 

@@ -9,7 +9,9 @@ public class LoginConstant {
     /**管理员登录*/
     public static final String ADMIN_TYPE = "admin_type" ;
     /**用户/会员登录*/
-    public static final String MEMBER_TYPE = "member_type" ;
+    public static final String MEMBER_TYPE = "member_type";
+    /**REFRESH_TOKEN方式登录*/
+    public  static  final  String REFRESH_TYPE = "REFRESH_TOKEN" ;
     /**使用用户名查询用户*/
     public static final String QUERY_ADMIN_SQL =
             "SELECT `id` ,`username`, `password`, `status` FROM sys_user WHERE username = ? ";
@@ -25,4 +27,8 @@ public class LoginConstant {
     /**会员查询SQL*/
     public static final String QUERY_MEMBER_SQL =
             "SELECT `id`,`password`, `status` FROM `user` WHERE mobile = ? or email = ? ";
+    /**使用后台用户的id 查询用户名称*/
+    public static  final  String QUERY_ADMIN_USER_WITH_ID = "SELECT `username` FROM sys_user where id = ?" ;
+    /**使用用户的id 查询用户名称*/
+    public static  final  String QUERY_MEMBER_USER_WITH_ID = "SELECT `mobile` FROM user where id = ?" ;
 }
