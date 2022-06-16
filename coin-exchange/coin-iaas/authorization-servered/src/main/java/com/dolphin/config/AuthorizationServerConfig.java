@@ -1,6 +1,7 @@
 package com.dolphin.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +29,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private UserDetailsService userDetailsService;
 
-    //@Autowired
+    //@Autowireddd
     //private RedisConnectionFactory redisConnectionFactory;
     /**
      * 添加第三方的客户端
