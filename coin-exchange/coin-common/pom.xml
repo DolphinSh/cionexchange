@@ -25,10 +25,10 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
         <!--配置文件拉取-->
-        <dependency>
+<!--        <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-        </dependency>
+        </dependency>-->
         <!--服务保护（限流、熔断）-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
@@ -89,8 +89,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
-
         <!--mapStruct依赖 高性能对象映射-->
         <dependency>
             <groupId>org.mapstruct</groupId>

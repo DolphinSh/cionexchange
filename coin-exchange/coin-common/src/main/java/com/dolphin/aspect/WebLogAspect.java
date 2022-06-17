@@ -2,6 +2,7 @@ package com.dolphin.aspect;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
+import com.alibaba.fastjson.JSON;
 import com.dolphin.model.WebLog;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,7 @@ public class WebLogAspect {
         webLog.setMethod(targetClassName + "." + method.getName());
         webLog.setParameter(getMethodParameter(method, proceedingJoinPoint.getArgs()));//{"key_参数的名称":"value_参数的值"}
         webLog.setResult(result);
+        log.info(JSON.toJSONString(webLog,true));
         return result;
     }
 

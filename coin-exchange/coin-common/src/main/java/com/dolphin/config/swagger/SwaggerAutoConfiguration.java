@@ -34,8 +34,7 @@ public class SwaggerAutoConfiguration {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getBasePackage()))
                 .paths(PathSelectors.any())
-                .build();
-        // 安全的配置
+                .build();// 安全的配置
         docket.securitySchemes(securitySchemes()) // 安全规则
                 .securityContexts(securityContexts()); // 安全配置的上下问
         return docket;
