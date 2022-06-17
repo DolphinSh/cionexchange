@@ -2,6 +2,7 @@ package com.dolphin.controller;
 
 import com.dolphin.model.R;
 import com.dolphin.model.WebLog;
+import com.dolphin.service.TestService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,9 @@ public class TestController {
 
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+
+    @Autowired
+    private TestService testService;
 
     @GetMapping("/common/test")
     @ApiOperation(value = "测试方法",authorizations = {@Authorization("Authorization")})
@@ -39,6 +43,14 @@ public class TestController {
         webLog.setMethod("com.dolphin.domain.webLog.testRedis");
         webLog.setUsername("1110");
         redisTemplate.opsForValue().set("com.dolphin.domain.webLog",webLog);
+        return R.ok("OK");
+    }
+
+    @GetMapping("/jetcache/test")
+    @ApiOperation(value = "jetcache缓存测试",authorizations = {@Authorization("Authorization")})
+    public R<String> testJetcache(String username){
+        WebLog webLog = testService.get(username);
+        System.out.println(webLog);
         return R.ok("OK");
     }
 }
