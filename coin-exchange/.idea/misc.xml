@@ -6,11 +6,11 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/coin-member/member-service/pom.xml" />
+        <option value="$PROJECT_DIR$/coin-admin/admin-api/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/coin-admin/admin-api/pom.xml" />
         <option value="$PROJECT_DIR$/gateway-server/pom.xml" />
       </set>
     </option>

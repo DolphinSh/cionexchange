@@ -33,7 +33,7 @@
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
         <com-alibaba-cloud.version>2.2.0.RELEASE</com-alibaba-cloud.version>
-        <mybatis-plus-boot-stater.version>3.3.2</mybatis-plus-boot-stater.version>
+        <mybatis-plus-boot-stater.version>3.4.2</mybatis-plus-boot-stater.version>
         <druid-boot-stater.version>1.1.23</druid-boot-stater.version>
         <redisson-spring-boot-starter.version>3.13.3</redisson-spring-boot-starter.version>
         <jetcache-starter-redis.version>2.6.0</jetcache-starter-redis.version>
@@ -52,6 +52,7 @@
         <okio.version>1.15.0</okio.version>
         <hutool.version>4.1.2</hutool.version>
         <swagger2.version>2.9.2</swagger2.version>
+        <spring-bootstrap.version>3.0.4</spring-bootstrap.version>
     </properties>
 
     <dependencies>
@@ -214,6 +215,13 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bootstrap</artifactId>
+                <version>${spring-bootstrap.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>
