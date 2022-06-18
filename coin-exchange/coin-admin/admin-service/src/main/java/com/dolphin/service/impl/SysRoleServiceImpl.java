@@ -1,5 +1,7 @@
 package com.dolphin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,5 +33,19 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             return true;
         }
         return false;
+    }
+
+    /**
+     * 根据角色的名称模糊分页查询角色
+     *
+     * @param page
+     * @param name 角色名称
+     * @return
+     */
+    @Override
+    public Page<SysRole> findByPage(Page<SysRole> page, String name) {
+        return page(page,new LambdaQueryWrapper<SysRole>().like(
+                !StringUtils.isEmpty(name),SysRole::getName,name
+        ));
     }
 }

@@ -1,5 +1,6 @@
 package com.dolphin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 public interface SysRoleService extends IService<SysRole>{
@@ -10,4 +11,12 @@ public interface SysRoleService extends IService<SysRole>{
      * @return
      */
     boolean isSuperAdmin(Long userId);
+
+    /**
+     * 根据角色的名称模糊分页查询角色
+     * @param page
+     * @param name
+     * @return
+     */
+    Page<SysRole> findByPage(Page<SysRole> page, String name);
 }
