@@ -97,6 +97,10 @@ public class SysUser {
     @ApiModelProperty(value="修改时间")
     private Date lastUpdateTime;
 
+    @ApiModelProperty(value = "角色的IDS")
+    @TableField(exist = false)
+    private String role_strings ;
+
     public static final String COL_ID = "id";
 
     public static final String COL_USERNAME = "username";
