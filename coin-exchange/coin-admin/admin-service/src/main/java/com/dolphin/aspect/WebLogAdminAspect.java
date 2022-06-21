@@ -31,7 +31,7 @@ import java.util.HashMap;
 /**
  * webLog 日志切面
  */
-@Component
+//@Component
 @Aspect
 @Order(1)
 @Slf4j

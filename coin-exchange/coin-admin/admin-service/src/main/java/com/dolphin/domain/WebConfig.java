@@ -1,9 +1,6 @@
 package com.dolphin.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -58,7 +55,7 @@ public class WebConfig {
     /**
      * 创建时间
      */
-    @TableField(value = "created")
+    @TableField(value = "created",fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建时间")
     private Date created;
 
@@ -74,7 +71,7 @@ public class WebConfig {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value="是否使用 0 否 1是")
-    private Boolean status;
+    private Integer status;
 
     public static final String COL_ID = "id";
 
