@@ -77,6 +77,10 @@ public class UserAddress {
     @ApiModelProperty(value="")
     private Long markid;
 
+    @TableField(exist = false)
+    @ApiModelProperty(value = "币种的名称") // 通过coin 来查询它--等我们搭建好财务系统后,就可以完成这个功能
+    private String coinName  = "测试币种";
+
     public static final String COL_ID = "id";
 
     public static final String COL_USER_ID = "user_id";

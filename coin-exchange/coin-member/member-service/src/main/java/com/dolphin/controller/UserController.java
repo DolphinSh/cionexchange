@@ -89,4 +89,17 @@ public class UserController {
         User user = userService.getById(id);
         return R.ok(user);
     }
+
+    @GetMapping("/directInvites")
+    @ApiOperation(value = "查询该用户邀请的用户列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "该用户的Id"),
+            @ApiImplicitParam(name = "current", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "每页显示的条数"),
+
+    })
+    public R<Page<User>> getDirectInvites(@ApiIgnore Page<User> page, Long userId) {
+        Page<User> userPage = userService.findDirectInvitePage(page, userId);
+        return R.ok(userPage);
+    }
 }

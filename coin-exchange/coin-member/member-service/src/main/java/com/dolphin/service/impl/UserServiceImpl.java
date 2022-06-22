@@ -38,4 +38,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         .eq(status != null, User::getStatus, status)
         );
     }
+
+    /**
+     * 查询该用户邀请的用户列表
+     *
+     * @param page   分页参数
+     * @param userId 用户id
+     * @return
+     */
+    @Override
+    public Page<User> findDirectInvitePage(Page<User> page, Long userId) {
+        return page(page, new LambdaQueryWrapper<User>()
+                .eq(userId != null, User::getDirectInviteid, userId)
+        );
+    }
 }
