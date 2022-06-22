@@ -25,10 +25,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param userName 会员的名称
      * @param realName 会员的真实名称
      * @param status   会员的状态
+     * @param reviewsStatus 会员的审核状态
      * @return
      */
     @Override
-    public Page<User> findByPage(Page<User> page, String mobile, Long userId, String userName, String realName, Integer status) {
+    public Page<User> findByPage(Page<User> page, String mobile, Long userId, String userName, String realName, Integer status,Integer reviewsStatus) {
         return page(page,
                 new LambdaQueryWrapper<User>()
                         .like(!StringUtils.isEmpty(mobile), User::getMobile, mobile)
@@ -36,6 +37,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         .like(!StringUtils.isEmpty(realName), User::getRealName, realName)
                         .eq(userId != null, User::getId, userId)
                         .eq(status != null, User::getStatus, status)
+                        .eq(reviewsStatus != null,User::getReviewsStatus,reviewsStatus)
         );
     }
 

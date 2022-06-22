@@ -13,9 +13,10 @@ public interface UserService extends IService<User>{
      * @param userName 会员的名称
      * @param realName 会员的真实名称
      * @param status 会员的状态
+     * @param reviewsStatus 会员的审核状态
      * @return
      */
-    Page<User> findByPage(Page<User> page, String mobile, Long userId, String userName, String realName, Integer status);
+    Page<User> findByPage(Page<User> page, String mobile, Long userId, String userName, String realName, Integer status, Integer reviewsStatus);
 
     /**
      * 查询该用户邀请的用户列表
@@ -24,4 +25,5 @@ public interface UserService extends IService<User>{
      * @return
      */
     Page<User> findDirectInvitePage(Page<User> page, Long userId);
+
 }
