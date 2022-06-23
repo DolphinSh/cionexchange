@@ -147,8 +147,8 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
         return jdbcTemplate.queryForObject(LoginConstant.QUERY_MEMBER_SQL, new RowMapper<User>() {
             @Override
             public User mapRow(ResultSet resultSet, int i) throws SQLException {
-                if (resultSet.wasNull()){
-                    throw new UsernameNotFoundException("用户: "+username+"不存在");
+                if (resultSet.wasNull()) {
+                    throw new UsernameNotFoundException("用户: " + username + "不存在");
                 }
                 long id = resultSet.getLong("id");//会员的id
                 String password = resultSet.getString("password");//会员的登录密码
@@ -163,6 +163,6 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
                         Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))
                 );
             }
-        },username,username);
+        }, username, username);
     }
 }
