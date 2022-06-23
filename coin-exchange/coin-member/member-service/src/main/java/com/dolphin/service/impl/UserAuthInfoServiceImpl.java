@@ -42,4 +42,5 @@ public class UserAuthInfoServiceImpl extends ServiceImpl<UserAuthInfoMapper, Use
         //空处理
         return userAuthInfoList == null? Collections.emptyList():userAuthInfoList;
     }
+
 }

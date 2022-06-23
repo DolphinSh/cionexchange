@@ -26,4 +26,11 @@ public interface UserService extends IService<User>{
      */
     Page<User> findDirectInvitePage(Page<User> page, Long userId);
 
+    /**
+     *  修改用户的审核状态
+     * @param id
+     * @param authStatus
+     * @param authCode
+     */
+    void updateUserAuthStatus(Long id, Byte authStatus, Long authCode, String remark);
 }
