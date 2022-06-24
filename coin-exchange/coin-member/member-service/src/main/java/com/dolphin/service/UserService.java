@@ -3,6 +3,8 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.model.UserAuthForm;
+
 public interface UserService extends IService<User>{
 
     /**
@@ -33,4 +35,12 @@ public interface UserService extends IService<User>{
      * @param authCode
      */
     void updateUserAuthStatus(Long id, Byte authStatus, Long authCode, String remark);
+
+    /**
+     * 用户实名认证
+     * @param id 用户实名认证id
+     * @param userAuthForm 用户表单
+     * @return
+     */
+    boolean identifyVerfiy(Long id, UserAuthForm userAuthForm);
 }

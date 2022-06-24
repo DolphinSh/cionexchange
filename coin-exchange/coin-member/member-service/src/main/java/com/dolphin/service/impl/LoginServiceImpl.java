@@ -82,33 +82,6 @@ public class LoginServiceImpl implements LoginService {
      * @param loginForm
      */
     private void checkFromData(LoginForm loginForm) {
-        //response.setContentType("application/json;charset=UTF-8");
-
-        String challenge = loginForm.getGeetest_challenge();
-        String validate = loginForm.getGeetest_validate();
-        String seccode = loginForm.getGeetest_seccode();
-        int status = 0;
-        String userId = "";
-        GeetestLibResult result = null;
-        String statusStr = redisTemplate.opsForValue().get(GeetestLib.GEETEST_SERVER_STATUS_SESSION_KEY).toString();
-        status = Integer.valueOf(statusStr).intValue();
-        userId = redisTemplate.opsForValue().get(GeetestLib.GEETEST_SERVER_USER_KEY + ":" + loginForm.getUuid()).toString();
-        // 检测存入redis中的极验云状态标识
-        if (status == 1) {
-            Map<String, String> paramMap = new HashMap<String, String>();
-            paramMap.put("user_id", userId);
-            paramMap.put("client_type", "web");
-            ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-            paramMap.put("ip_address", IpUtil.getIpAddr(servletRequestAttributes.getRequest()));
-            result = geetestLib.successValidate(challenge, validate, seccode, paramMap);
-            log.info("验证的结果为{}", JSON.toJSONString(result));
-        } else {
-            result = geetestLib.failValidate(challenge, validate, seccode);
-        }
-
-        if(result.getStatus()!=1){
-            log.error("验证异常", JSON.toJSONString(result,true));
-            throw new IllegalArgumentException("验证码验证异常") ;
-        }
+        loginForm.check(loginForm,geetestLib,redisTemplate);
     }
 }

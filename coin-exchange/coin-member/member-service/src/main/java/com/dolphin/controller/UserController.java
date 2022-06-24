@@ -6,6 +6,7 @@ import com.dolphin.domain.User;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
 import com.dolphin.model.R;
+import com.dolphin.model.UserAuthForm;
 import com.dolphin.service.UserAuthAuditRecordService;
 import com.dolphin.service.UserAuthInfoService;
 import com.dolphin.service.UserService;
@@ -16,6 +17,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -198,7 +200,33 @@ public class UserController {
         // 2 在authAuditRecord 里面添加一条记录
 
         userService.updateUserAuthStatus(id, authStatus, authCode,remark);
-
         return R.ok();
+    }
+
+    @GetMapping("/current/info")
+    @ApiOperation(value = "获取当前登录用户信息")
+    public R<User> currentUserInfo(){
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        User user = userService.getById(Long.valueOf(userIdStr));
+        //屏蔽信息
+        user.setPassword("*****");
+        user.setPaypassword("*****");
+        user.setAccessKeyId("*****");
+        user.setAccessKeySecret("*****");
+        return R.ok(user);
+    }
+
+    @PostMapping("/authAccount")
+    @ApiOperation(value = "用户的实名认证")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userAuthForm", value = "userAuthFormjson数据")
+    })
+    public R identifiyCheck(@RequestBody UserAuthForm userAuthForm){
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        boolean isOk = userService.identifyVerfiy(Long.valueOf(userIdStr),userAuthForm);
+        if (isOk){
+            return R.ok("实名认证成功！");
+        }
+        return R.fail("实名认证失败！");
     }
 }
