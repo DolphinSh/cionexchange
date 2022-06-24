@@ -40,7 +40,7 @@
                   <option name="javaMapperPath" value="$PROJECT_DIR$/coin-member/member-service/src/main/java" />
                   <option name="javaModelPacakge" value="com.dolphin.domain" />
                   <option name="javaModelPath" value="$PROJECT_DIR$/coin-member/member-service/src/main/java" />
-                  <option name="javaServiceInterfacePackage" value="com.dolphin.service" />
+                  <option name="javaServiceInterfacePackage" value="com.dolphin.service.impl" />
                   <option name="javaServiceInterfacePath" value="$PROJECT_DIR$/coin-member/member-service/src/main/java" />
                   <option name="javaServicePackage" value="com.dolphin.service.impl" />
                   <option name="javaServicePath" value="$PROJECT_DIR$/coin-member/member-service/src/main/java" />
@@ -90,7 +90,9 @@
                 <TableGenerateConfig>
                   <option name="generatedKey" value="id" />
                   <option name="javaModelName" value="Sms" />
-                  <option name="moduleName" value="admin-service" />
+                  <option name="moduleName" value="member-service" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
                   <option name="useActualColumnName" value="false" />
                 </TableGenerateConfig>
               </value>
