@@ -299,11 +299,4 @@ public class UserController {
         return isOk ? R.ok("重新设置交易密码成功") : R.fail("重新设置交易密码失败");
     }
 
-    @GetMapping("/invites")
-    @ApiOperation(value = "用户的邀请列表")
-    public R<List<User>> getUserInvites() {
-        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        List<User> users = userService.getUserInvites(userId);
-        return R.ok(users);
-    }
 }

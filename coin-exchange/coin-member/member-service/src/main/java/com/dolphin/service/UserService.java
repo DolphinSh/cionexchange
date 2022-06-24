@@ -96,11 +96,4 @@ public interface UserService extends IService<User>{
      * @return 修改结果
      */
     boolean unsetPayPassword(Long userId, UnsetPayPasswordParam unsetPayPasswordParam);
-
-    /**
-     * 用户的邀请列表
-     * @param userId 用户id
-     * @return
-     */
-    List<User> getUserInvites(Long userId);
 }
