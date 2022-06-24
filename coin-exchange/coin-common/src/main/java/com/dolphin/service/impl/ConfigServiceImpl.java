@@ -34,4 +34,15 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, Config> impleme
         );
         return pageData;
     }
+
+    /**
+     * 通过规则的code查询签名
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public Config getConfigByCode(String code) {
+        return getOne(new LambdaQueryWrapper<Config>().eq(Config::getCode,code));
+    }
 }
