@@ -25,7 +25,7 @@
                     <el-col :span="14">
                       <el-input :placeholder="$t('m.userCenter.pleasePhoneV')"
                                 v-model="ruleForm.oldValidateCode"
-                                :maxlength="6">
+                                :maxlength="4">
                       </el-input>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>
@@ -56,7 +56,7 @@
                     <el-col :span="14">
                       <el-input :placeholder="$t('m.userCenter.pleasePhoneV')"
                                 v-model="ruleForm.validateCode"
-                                :maxlength="6">
+                                :maxlength="4">
                       </el-input>
                     </el-col>
                     <el-col :span="1">&nbsp;</el-col>

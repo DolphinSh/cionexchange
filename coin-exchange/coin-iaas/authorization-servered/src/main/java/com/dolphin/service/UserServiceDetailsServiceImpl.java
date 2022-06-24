@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.dolphin.constant.LoginConstant;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -55,6 +56,9 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
                     break;
                 case LoginConstant.MEMBER_TYPE:
                     userDetails = loadMemberUserByUsername(username);
+                    if (userDetails == null){
+                        throw  new AuthenticationServiceException("账号或密码错误！");
+                    }
                     break;
                 default:
                     throw new AuthenticationServiceException("暂不支持的登录方式");
@@ -144,25 +148,32 @@ public class UserServiceDetailsServiceImpl implements UserDetailsService {
      * @param username
      */
     private UserDetails loadMemberUserByUsername(String username) {
-        return jdbcTemplate.queryForObject(LoginConstant.QUERY_MEMBER_SQL, new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet resultSet, int i) throws SQLException {
-                if (resultSet.wasNull()) {
-                    throw new UsernameNotFoundException("用户: " + username + "不存在");
+
+        User user = null;
+        try {
+            user = jdbcTemplate.queryForObject(LoginConstant.QUERY_MEMBER_SQL, new RowMapper<User>() {
+                @Override
+                public User mapRow(ResultSet resultSet, int i) throws SQLException {
+                    if (resultSet.wasNull()) {
+                        throw new UsernameNotFoundException("用户: " + username + "不存在");
+                    }
+                    long id = resultSet.getLong("id");//会员的id
+                    String password = resultSet.getString("password");//会员的登录密码
+                    int status = resultSet.getInt("status");//会员的状态
+                    return new User(
+                            String.valueOf(id),
+                            password,
+                            status == 1,
+                            true,
+                            true,
+                            true,
+                            Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))
+                    );
                 }
-                long id = resultSet.getLong("id");//会员的id
-                String password = resultSet.getString("password");//会员的登录密码
-                int status = resultSet.getInt("status");//会员的状态
-                return new User(
-                        String.valueOf(id),
-                        password,
-                        status == 1,
-                        true,
-                        true,
-                        true,
-                        Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))
-                );
-            }
-        }, username, username);
+            }, username, username);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }

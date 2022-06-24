@@ -6,6 +6,7 @@ import com.dolphin.domain.User;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
 import com.dolphin.model.R;
+import com.dolphin.model.UpdatePhoneParam;
 import com.dolphin.model.UserAuthForm;
 import com.dolphin.service.UserAuthAuditRecordService;
 import com.dolphin.service.UserAuthInfoService;
@@ -244,4 +245,27 @@ public class UserController {
         }
         return R.fail("提交高级认证失败！");
     }
+
+    @PostMapping("/updatePhone")
+    @ApiOperation(value = "修改手机号")
+    public R updatePhone(@RequestBody UpdatePhoneParam updatePhoneParam) {
+        String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        boolean isOk = userService.updatePhone(Long.valueOf(userIdStr),updatePhoneParam);
+        if (isOk) {
+            return R.ok("修改手机号成功！");
+        }
+        return R.fail("修改手机号失败！");
+    }
+
+    @GetMapping("/checkTel")
+    @ApiOperation(value = "检查新的手机号是否可用,如可用,则给该新手机发送验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mobile", value = "新的手机号"),
+            @ApiImplicitParam(name = "countryCode", value = "手机号的区域")
+    })
+    public R checkNewPhone(@RequestParam(required = true) String mobile, @RequestParam(required = true) String countryCode) {
+        boolean isOk = userService.checkNewPhone(mobile, countryCode);
+        return isOk ? R.ok("新的手机号校验成功") : R.fail("新的手机号校验失败");
+    }
+
 }

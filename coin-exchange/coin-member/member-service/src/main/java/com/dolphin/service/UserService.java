@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.model.UpdatePhoneParam;
 import com.dolphin.model.UserAuthForm;
 
 import java.util.List;
@@ -53,4 +54,20 @@ public interface UserService extends IService<User>{
      * @return 提交高级认证结果
      */
     boolean authUser(Long userId, List<String> imgList);
+
+    /**
+     * 修改用户的手机号
+     * @param userId 用户id
+     * @param updatePhoneParam 修改手机的参数
+     * @return
+     */
+    boolean updatePhone(Long userId, UpdatePhoneParam updatePhoneParam);
+
+    /**
+     * 检查新的手机号是否可用,如可用,则给该新手机发送验证码
+     * @param mobile 新手机号
+     * @param countryCode 新手机号国家code
+     * @return
+     */
+    boolean checkNewPhone(String mobile, String countryCode);
 }

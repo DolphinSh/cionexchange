@@ -44,7 +44,7 @@ export default {
     checkValidateCode(rule, value, callback) {
       if(value == "") {
         callback(new Error(this.$t('m.loginRegist.plzInputCode')));
-      }else if (!value || !/^\d{6}/.test(value)) {
+      }else if (!value || !/^\d{4}/.test(value)) {
         callback(new Error(this.$t('m.loginRegist.errorCode')));
       } else {
         callback();
