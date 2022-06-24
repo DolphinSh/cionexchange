@@ -10,6 +10,8 @@ import com.dolphin.domain.Sms;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
 import com.dolphin.geetest.GeetestLib;
+import com.dolphin.model.UnsetPayPasswordParam;
+import com.dolphin.model.UpdateLoginParam;
 import com.dolphin.model.UpdatePhoneParam;
 import com.dolphin.model.UserAuthForm;
 import com.dolphin.service.UserAuthAuditRecordService;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -244,6 +247,94 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         sms.setCountryCode(countryCode);
         sms.setTemplateCode("CHANGE_PHONE_VERIFY"); //模板代码  -- > 校验手机号
         return smsService.sendSms(sms);
+    }
+
+    /**
+     * 修改用户的登录密码
+     *
+     * @param userId           用户id
+     * @param updateLoginParam 修改密码参数
+     * @return
+     */
+    @Override
+    public boolean updateUserLoginPwd(Long userId, UpdateLoginParam updateLoginParam) {
+        // 1 用户id校验
+        User user = getById(userId);
+        if (user == null){
+            throw new IllegalArgumentException("用户的id错误");
+        }
+
+        //2 校验之前的密码 数据库的密码是我们加密后的密码。
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        boolean matches = bCryptPasswordEncoder.matches(updateLoginParam.getOldpassword(), user.getPassword());
+        if (!matches){
+            throw new IllegalArgumentException("用户的原始密码输入错误");
+        }
+        //3 进行验证码校验
+        String validateCode = updateLoginParam.getValidateCode();
+        String phoneValidateCode = stringRedisTemplate.opsForValue().get("SMS:CHANGE_LOGIN_PWD_VERIFY:"+user.getMobile());
+        if (!validateCode.equals(phoneValidateCode)) {
+            throw new IllegalArgumentException("手机验证码错误");
+        }
+        //4 结果保存
+        user.setPaypassword(bCryptPasswordEncoder.encode(updateLoginParam.getNewpassword()));//修改为加密后的密码
+        return updateById(user);
+    }
+
+    /**
+     * 修改用户的交易密码
+     *
+     * @param userId           用户id
+     * @param updateLoginParam 修改密码参数
+     * @return 修改结果
+     */
+    @Override
+    public boolean updateUserPayPwd(Long userId, UpdateLoginParam updateLoginParam) {
+        // 1 查询之前的用户
+        User user = getById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("用户的Id错误");
+        }
+        // 2 校验之前的密码 数据库的密码都是我们加密后的密码.-->
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        boolean matches = bCryptPasswordEncoder.matches(updateLoginParam.getOldpassword(), user.getPaypassword());
+        if (!matches) {
+            throw new IllegalArgumentException("用户的原始密码输入错误");
+        }
+        // 3 校验手机的验证码
+        String validateCode = updateLoginParam.getValidateCode();
+        String phoneValidateCode = stringRedisTemplate.opsForValue().get("SMS:CHANGE_PAY_PWD_VERIFY:" + user.getMobile());//"SMS:CHANGE_LOGIN_PWD_VERIFY:111111"
+        if (!validateCode.equals(phoneValidateCode)) {
+            throw new IllegalArgumentException("手机验证码错误");
+        }
+        //4 结果保存
+        user.setPaypassword(bCryptPasswordEncoder.encode(updateLoginParam.getNewpassword())); // 修改为加密后的密码
+        return updateById(user);
+    }
+
+    /**
+     * 重新设置交易密码
+     *
+     * @param userId                用户id
+     * @param unsetPayPasswordParam 重置密码参数
+     * @return 修改结果
+     */
+    @Override
+    public boolean unsetPayPassword(Long userId, UnsetPayPasswordParam unsetPayPasswordParam) {
+        User user = getById(userId);
+        if (user == null){
+            throw new IllegalArgumentException("用户的Id错误");
+        }
+        String validateCode = unsetPayPasswordParam.getValidateCode();
+        String phoneValidate = stringRedisTemplate.opsForValue().get("SMS:FORGOT_PAY_PWD_VERIFY:" + user.getMobile());
+        if (!validateCode.equals(phoneValidate)) {
+            throw new IllegalArgumentException("用户的验证码错误");
+        }
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setPaypassword(bCryptPasswordEncoder.encode(unsetPayPasswordParam.getPayPassword()));
+
+        return updateById(user);
     }
 
 

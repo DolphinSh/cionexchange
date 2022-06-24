@@ -5,9 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
-import com.dolphin.model.R;
-import com.dolphin.model.UpdatePhoneParam;
-import com.dolphin.model.UserAuthForm;
+import com.dolphin.model.*;
 import com.dolphin.service.UserAuthAuditRecordService;
 import com.dolphin.service.UserAuthInfoService;
 import com.dolphin.service.UserService;
@@ -248,7 +246,7 @@ public class UserController {
 
     @PostMapping("/updatePhone")
     @ApiOperation(value = "修改手机号")
-    public R updatePhone(@RequestBody UpdatePhoneParam updatePhoneParam) {
+    public R updatePhone(@RequestBody @Validated UpdatePhoneParam updatePhoneParam) {
         String userIdStr = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         boolean isOk = userService.updatePhone(Long.valueOf(userIdStr),updatePhoneParam);
         if (isOk) {
@@ -266,6 +264,39 @@ public class UserController {
     public R checkNewPhone(@RequestParam(required = true) String mobile, @RequestParam(required = true) String countryCode) {
         boolean isOk = userService.checkNewPhone(mobile, countryCode);
         return isOk ? R.ok("新的手机号校验成功") : R.fail("新的手机号校验失败");
+    }
+
+    @PostMapping("/updateLoginPassword")
+    @ApiOperation(value = "修改用户的登录密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "updateLoginParam", value = "修改用户的登录密码")
+    })
+    public R updateLoginPwd(@RequestBody @Validated UpdateLoginParam updateLoginParam) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOk = userService.updateUserLoginPwd(userId, updateLoginParam);
+        return isOk ? R.ok("修改用户的登录密码成功") : R.fail("修改用户的登录密码失败");
+    }
+
+    @PostMapping("/updatePayPassword")
+    @ApiOperation(value = "修改用户的交易密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "updateLoginParam", value = "修改用户的交易密码")
+    })
+    public R updatePayPwd(@RequestBody @Validated UpdateLoginParam updateLoginParam) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOk = userService.updateUserPayPwd(userId, updateLoginParam);
+        return isOk ? R.ok("修改用户的交易密码成功") : R.fail("修改用户的交易密码失败");
+    }
+
+    @PostMapping("/setPayPassword")
+    @ApiOperation(value = "重新设置交易密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "UnsetPayPasswordParam", value = "重新设置交易密码")
+    })
+    public R setPayPassword(@RequestBody @Validated UnsetPayPasswordParam unsetPayPasswordParam) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOk = userService.unsetPayPassword(userId, unsetPayPasswordParam);
+        return isOk ? R.ok("重新设置交易密码成功") : R.fail("重新设置交易密码失败");
     }
 
 }

@@ -3,6 +3,8 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.model.UnsetPayPasswordParam;
+import com.dolphin.model.UpdateLoginParam;
 import com.dolphin.model.UpdatePhoneParam;
 import com.dolphin.model.UserAuthForm;
 
@@ -70,4 +72,28 @@ public interface UserService extends IService<User>{
      * @return
      */
     boolean checkNewPhone(String mobile, String countryCode);
+
+    /**
+     * 修改用户的登录密码
+     * @param userId 用户id
+     * @param updateLoginParam 修改密码参数
+     * @return 修改结果
+     */
+    boolean updateUserLoginPwd(Long userId, UpdateLoginParam updateLoginParam);
+
+    /**
+     * 修改用户的交易密码
+     * @param userId 用户id
+     * @param updateLoginParam 修改密码参数
+     * @return 修改结果
+     */
+    boolean updateUserPayPwd(Long userId, UpdateLoginParam updateLoginParam);
+
+    /**
+     * 重新设置交易密码
+     * @param userId 用户id
+     * @param unsetPayPasswordParam 重置密码参数
+     * @return 修改结果
+     */
+    boolean unsetPayPassword(Long userId, UnsetPayPasswordParam unsetPayPasswordParam);
 }

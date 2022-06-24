@@ -41,7 +41,7 @@
                             <el-col :span="14">
                               <el-input :placeholder="$t('m.userCenter.plzValidationCode')"
                                         v-model="forms.validateCode"
-                                        :maxlength="6">
+                                        :maxlength="4">
                               </el-input>
                             </el-col>
                             <el-col :span="1">&nbsp;</el-col>
@@ -117,7 +117,7 @@
         }
       };
       var checkVcode =(rule, value, callback)=>{
-        if (!value || !/^\d{6}/.test(value)) {
+        if (!value || !/^\d{4}/.test(value)) {
           callback(new Error(this.$t('m.userCenter.plzValidationCode')));
         }else{
           callback();
