@@ -337,6 +337,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return updateById(user);
     }
 
+    /**
+     * 用户的邀请列表
+     *
+     * @param userId 用户id
+     * @return
+     */
+    @Override
+    public List<User> getUserInvites(Long userId) {
+        List<User> list = list(new LambdaQueryWrapper<User>().eq(userId != null, User::getDirectInviteid, userId));
+        if (CollectionUtils.isEmpty(list)){
+            return Collections.emptyList();
+        }
+        list.forEach(user -> {
+            user.setPaypassword("*********");
+            user.setPassword("********");
+            user.setAccessKeyId("*********");
+            user.setAccessKeySecret("*********");
+        });
+        return list;
+    }
+
 
     /**
      * 极验校验
