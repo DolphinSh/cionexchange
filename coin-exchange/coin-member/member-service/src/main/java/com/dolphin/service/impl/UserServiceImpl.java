@@ -1,13 +1,16 @@
 package com.dolphin.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Snowflake;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.config.IdAutoConfiguration;
 import com.dolphin.domain.UserAuthAuditRecord;
+import com.dolphin.domain.UserAuthInfo;
 import com.dolphin.geetest.GeetestLib;
 import com.dolphin.model.UserAuthForm;
 import com.dolphin.service.UserAuthAuditRecordService;
+import com.dolphin.service.UserAuthInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,7 +44,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
+    
+    @Autowired
+    private Snowflake snowflake; //雪花算法
 
+    @Autowired
+    private UserAuthInfoService userAuthInfoService;
     /**
      * 条件分页查询查询会员的列表
      *
@@ -141,6 +150,41 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //执行更新操作
         boolean updateStatus = updateById(user);
         return updateStatus;
+    }
+
+    /**
+     * 用户进行高级认证
+     *
+     * @param userId  用户id
+     * @param imgList 用户的图片地址
+     * @return 提交高级认证结果
+     */
+    @Override
+    @Transactional
+    public boolean authUser(Long userId, List<String> imgList) {
+        //对图片进行判断
+        if (CollectionUtils.isEmpty(imgList)){
+            throw new IllegalArgumentException("用户的身份认证信息为null");
+        }
+        User user = getById(userId);
+        if (user == null){
+            throw new IllegalArgumentException("请输入正确的userId");
+        }
+        long authCode = snowflake.nextId(); //使用时间戳(有重复) --> 雪花算法
+        List<UserAuthInfo> userAuthInfoList = new ArrayList<>(imgList.size());
+        for (int i = 0; i < imgList.size(); i++) {
+            String s = imgList.get(i);
+            UserAuthInfo userAuthInfo = new UserAuthInfo();
+            userAuthInfo.setImageUrl(imgList.get(i));
+            userAuthInfo.setUserId(userId);
+            userAuthInfo.setSerialno(i + 1);  // 设置序号 ,1 正面  2 反面 3 手持
+            userAuthInfo.setAuthCode(authCode); // 是一组身份信息的标识 3 个图片为一组
+            userAuthInfoList.add(userAuthInfo);
+        }
+        userAuthInfoService.saveBatch(userAuthInfoList);
+        user.setReviewsStatus(0); //更新状态为等待审核
+        boolean isOk = updateById(user);//更新用户的状态
+        return isOk;
     }
 
     /**

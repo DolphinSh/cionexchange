@@ -5,6 +5,8 @@ import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dolphin.model.UserAuthForm;
 
+import java.util.List;
+
 public interface UserService extends IService<User>{
 
     /**
@@ -43,4 +45,12 @@ public interface UserService extends IService<User>{
      * @return
      */
     boolean identifyVerfiy(Long id, UserAuthForm userAuthForm);
+
+    /**
+     * 用户进行高级认证
+     * @param userId 用户id
+     * @param imgList  用户的图片地址
+     * @return 提交高级认证结果
+     */
+    boolean authUser(Long userId, List<String> imgList);
 }
