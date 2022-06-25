@@ -390,6 +390,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
+     * 用户重置密码
+     *
+     * @param unSetPasswordParam 重置密码的表单参数
+     * @return 重置结果
+     */
+    @Override
+    public boolean unsetLoginPwd(UnSetPasswordParam unSetPasswordParam) {
+        log.info("开始重置密码{}", JSON.toJSONString(unSetPasswordParam, true));
+        // 1 极验校验
+        unSetPasswordParam.check(geetestLib, redisTemplate);
+        // 2 手机号码校验
+        String phoneValidateCode = stringRedisTemplate.opsForValue().get("SMS:FORGOT_VERIFY:" + unSetPasswordParam.getMobile());
+        if (!unSetPasswordParam.getValidateCode().equals(phoneValidateCode)) {
+            throw new IllegalArgumentException("手机验证码错误");
+        }
+        // 3 数据库用户的校验
+
+        String mobile = unSetPasswordParam.getMobile();
+        User user = getOne(new LambdaQueryWrapper<User>().eq(User::getMobile, mobile));
+        if (user == null) {
+            throw new IllegalArgumentException("该用户不存在");
+        }
+        String encode = new BCryptPasswordEncoder().encode(unSetPasswordParam.getPassword());
+        user.setPassword(encode);
+        return updateById(user);
+    }
+
+    /**
      * 构建一个新的用户
      * @param registerParam
      * @return

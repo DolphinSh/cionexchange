@@ -31,6 +31,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .sessionManagement().disable()
                 .authorizeRequests()
                 .antMatchers(
+                        "/users/setPassword",
+                        "/sms/sendTo",
                         "/users/register",
                         "/gt/register",
                         "/login",

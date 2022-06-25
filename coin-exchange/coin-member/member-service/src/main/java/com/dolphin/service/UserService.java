@@ -108,4 +108,11 @@ public interface UserService extends IService<User>{
      * @return 注册结果
      */
     Boolean register(RegisterParam registerParam);
+
+    /**
+     * 用户重置密码
+     * @param unSetPasswordParam 重置密码的表单参数
+     * @return 重置结果
+     */
+    boolean unsetLoginPwd(UnSetPasswordParam unSetPasswordParam);
 }

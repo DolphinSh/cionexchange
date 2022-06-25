@@ -109,7 +109,7 @@ public class UserController implements UserServiceFeign {
         return R.ok(user);
     }
 
-    @GetMapping("/directInvites")
+    @GetMapping("/invites")
     @ApiOperation(value = "查询该用户邀请的用户列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "该用户的Id"),
@@ -309,6 +309,17 @@ public class UserController implements UserServiceFeign {
     public R register(@RequestBody RegisterParam registerParam){
         Boolean isOk = userService.register(registerParam);
         return isOk ? R.ok("用户注册成功") : R.fail("用户的注册失败");
+    }
+
+
+    @PostMapping("/setPassword")
+    @ApiOperation(value = "用户重置密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "unSetPasswordParam", value = "unSetPasswordParam json")
+    })
+    public R unsetPassword(@RequestBody @Validated UnSetPasswordParam unSetPasswordParam) {
+        boolean isOk = userService.unsetLoginPwd(unSetPasswordParam);
+        return isOk ? R.ok() : R.fail("用户重置密码失败");
     }
 
     /**
