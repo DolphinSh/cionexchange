@@ -9,7 +9,9 @@ import com.dolphin.config.IdAutoConfiguration;
 import com.dolphin.domain.Sms;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
+import com.dolphin.dto.UserDto;
 import com.dolphin.geetest.GeetestLib;
+import com.dolphin.mappers.UserDtoMapper;
 import com.dolphin.model.UnsetPayPasswordParam;
 import com.dolphin.model.UpdateLoginParam;
 import com.dolphin.model.UpdatePhoneParam;
@@ -335,6 +337,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPaypassword(bCryptPasswordEncoder.encode(unsetPayPasswordParam.getPayPassword()));
 
         return updateById(user);
+    }
+
+    /**
+     * 通过用户id 批量查询用户的基础信息
+     *
+     * @param ids 用户id
+     * @return
+     */
+    @Override
+    public List<UserDto> getBasicUsers(List<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)){
+            return Collections.emptyList();
+        }
+        List<User> list = list(new LambdaQueryWrapper<User>()
+                .in(User::getId, ids)
+        );
+        if (CollectionUtils.isEmpty(list)){
+            return Collections.emptyList();
+        }
+        //将user -> userDto
+        List<UserDto> userDtos = UserDtoMapper.INSTANCE.convert2Dto(list);
+        return userDtos;
     }
 
 

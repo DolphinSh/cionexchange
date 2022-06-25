@@ -82,12 +82,12 @@ public class WorkIssue {
 
     @TableField(exist = false)
     @ApiModelProperty(value = "创建工单的用户名称")
-    public String username ="测试用户" ;
+    public String username;
 
 
     @TableField(exist = false)
     @ApiModelProperty(value = "创建工单的用户真实名称")
-    private String realName= "测试用户" ;
+    private String realName;
 
     public static final String COL_ID = "id";
 

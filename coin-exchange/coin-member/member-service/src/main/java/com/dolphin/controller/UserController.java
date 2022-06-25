@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
+import com.dolphin.domain.UserBank;
+import com.dolphin.dto.UserDto;
+import com.dolphin.feign.UserServiceFeign;
 import com.dolphin.model.*;
 import com.dolphin.service.UserAuthAuditRecordService;
 import com.dolphin.service.UserAuthInfoService;
@@ -28,7 +31,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @Api(tags = "会员的控制器")
-public class UserController {
+public class UserController implements UserServiceFeign {
     @Autowired
     private UserService userService;
 
@@ -299,4 +302,14 @@ public class UserController {
         return isOk ? R.ok("重新设置交易密码成功") : R.fail("重新设置交易密码失败");
     }
 
+    /**
+     * 用于admin-service里面 远程调用member-service
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<UserDto> getBasicUsers(List<Long> ids) {
+        List<UserDto> userDto = userService.getBasicUsers(ids);
+        return userDto;
+    }
 }

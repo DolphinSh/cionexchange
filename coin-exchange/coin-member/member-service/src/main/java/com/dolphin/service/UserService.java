@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.dto.UserDto;
 import com.dolphin.model.UnsetPayPasswordParam;
 import com.dolphin.model.UpdateLoginParam;
 import com.dolphin.model.UpdatePhoneParam;
@@ -96,4 +97,11 @@ public interface UserService extends IService<User>{
      * @return 修改结果
      */
     boolean unsetPayPassword(Long userId, UnsetPayPasswordParam unsetPayPasswordParam);
+
+    /**
+     * 通过用户id 批量查询用户的基础信息
+     * @param ids 用户id
+     * @return
+     */
+    List<UserDto> getBasicUsers(List<Long> ids);
 }

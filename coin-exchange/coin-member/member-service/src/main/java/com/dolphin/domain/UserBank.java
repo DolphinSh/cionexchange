@@ -105,6 +105,11 @@ public class UserBank {
     @ApiModelProperty(value="创建时间")
     private Date created;
 
+    @ApiModelProperty(value = "交易密码")
+    @TableField(exist = false)
+    @NotBlank
+    private String payPassword ;
+
     public static final String COL_ID = "id";
 
     public static final String COL_USER_ID = "user_id";
