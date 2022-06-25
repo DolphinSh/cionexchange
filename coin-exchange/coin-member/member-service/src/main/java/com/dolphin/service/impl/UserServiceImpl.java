@@ -2,7 +2,9 @@ package com.dolphin.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Snowflake;
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.alicloud.sms.ISmsService;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.config.IdAutoConfiguration;
@@ -12,10 +14,7 @@ import com.dolphin.domain.UserAuthInfo;
 import com.dolphin.dto.UserDto;
 import com.dolphin.geetest.GeetestLib;
 import com.dolphin.mappers.UserDtoMapper;
-import com.dolphin.model.UnsetPayPasswordParam;
-import com.dolphin.model.UpdateLoginParam;
-import com.dolphin.model.UpdatePhoneParam;
-import com.dolphin.model.UserAuthForm;
+import com.dolphin.model.*;
 import com.dolphin.service.UserAuthAuditRecordService;
 import com.dolphin.service.UserAuthInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -361,13 +360,70 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userDtos;
     }
 
+    /**
+     * 用户的注册
+     *
+     * @param registerParam 注册的表单参数
+     * @return 注册结果
+     */
+    @Override
+    public Boolean register(RegisterParam registerParam) {
+        log.info("用户开始注册{}", JSON.toJSONString(registerParam, true));
+        String mobile = registerParam.getMobile();
+        String email = registerParam.getEmail();
+        // 1 简单的校验
+        if (StringUtils.isEmpty(email) && StringUtils.isEmpty(mobile)) {
+            throw new IllegalArgumentException("手机号或邮箱不能同时为空");
+        }
+        // 2 查询校验
+        int count = count(new LambdaQueryWrapper<User>()
+                .eq(!StringUtils.isEmpty(email), User::getEmail, email)
+                .eq(!StringUtils.isEmpty(mobile), User::getMobile, mobile)
+        );
+        if (count > 0) {
+            throw new IllegalArgumentException("手机号或邮箱已经被注册");
+        }
+        // 3 极验校验
+        registerParam.check(geetestLib, redisTemplate); // 进行极验的校验
+        User user = getUser(registerParam);
+        return save(user);
+    }
+
+    /**
+     * 构建一个新的用户
+     * @param registerParam
+     * @return
+     */
+    private User getUser(RegisterParam registerParam) {
+        User user = new User();
+        user.setCountryCode(registerParam.getCountryCode());
+        user.setEmail(registerParam.getEmail());
+        user.setMobile(registerParam.getMobile());
+        String encodePwd = new BCryptPasswordEncoder().encode(registerParam.getPassword());
+        user.setPassword(encodePwd);
+        user.setPaypassSetting(false);
+        user.setStatus((byte) 1);
+        user.setType((byte) 1);
+        user.setAuthStatus((byte) 0);
+        user.setLogins(0);
+        user.setInviteCode(RandomUtil.randomString(6)); // 用户的邀请码
+        if (!StringUtils.isEmpty(registerParam.getInvitionCode())) {
+            User userPre = getOne(new LambdaQueryWrapper<User>().eq(User::getInviteCode, registerParam.getInvitionCode()));
+            if (userPre != null) {
+                user.setDirectInviteid(String.valueOf(userPre.getId())); // 邀请人的id , 需要查询
+                user.setInviteRelation(String.valueOf(userPre.getId())); // 邀请人的id , 需要查询
+            }
+        }
+        return user;
+    }
+
 
     /**
      * 极验校验
      * @param userAuthForm
      */
     private void checkForm(UserAuthForm userAuthForm) {
-        userAuthForm.check(userAuthForm,geetestLib,redisTemplate);
+        userAuthForm.check(geetestLib,redisTemplate);
     }
 
     @Override

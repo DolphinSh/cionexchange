@@ -301,6 +301,15 @@ public class UserController implements UserServiceFeign {
         boolean isOk = userService.unsetPayPassword(userId, unsetPayPasswordParam);
         return isOk ? R.ok("重新设置交易密码成功") : R.fail("重新设置交易密码失败");
     }
+    @PostMapping("/register")
+    @ApiOperation(value = "用户的注册")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "RegisterParam", value = "用户的注册的Json")
+    })
+    public R register(@RequestBody RegisterParam registerParam){
+        Boolean isOk = userService.register(registerParam);
+        return isOk ? R.ok("用户注册成功") : R.fail("用户的注册失败");
+    }
 
     /**
      * 用于admin-service里面 远程调用member-service

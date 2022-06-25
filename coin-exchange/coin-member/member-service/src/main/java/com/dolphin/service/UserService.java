@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dolphin.dto.UserDto;
-import com.dolphin.model.UnsetPayPasswordParam;
-import com.dolphin.model.UpdateLoginParam;
-import com.dolphin.model.UpdatePhoneParam;
-import com.dolphin.model.UserAuthForm;
+import com.dolphin.model.*;
 
 import java.util.List;
 
@@ -104,4 +101,11 @@ public interface UserService extends IService<User>{
      * @return
      */
     List<UserDto> getBasicUsers(List<Long> ids);
+
+    /**
+     * 用户的注册
+     * @param registerParam 注册的表单参数
+     * @return 注册结果
+     */
+    Boolean register(RegisterParam registerParam);
 }

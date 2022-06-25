@@ -82,6 +82,6 @@ public class LoginServiceImpl implements LoginService {
      * @param loginForm
      */
     private void checkFromData(LoginForm loginForm) {
-        loginForm.check(loginForm,geetestLib,redisTemplate);
+        loginForm.check(geetestLib,redisTemplate);
     }
 }

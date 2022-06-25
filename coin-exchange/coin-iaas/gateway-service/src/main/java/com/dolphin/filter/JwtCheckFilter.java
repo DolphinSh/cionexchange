@@ -26,7 +26,7 @@ public class JwtCheckFilter implements GlobalFilter, Ordered {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
-    @Value("${no.token.access.urls:/admin/login,/user/gt/register,/user/login}")
+    @Value("${no.token.access.urls:/admin/login,/user/gt/register,/user/login,/user/users/register}")
     private Set<String> noRequireTokenUrls;
 
     /**
