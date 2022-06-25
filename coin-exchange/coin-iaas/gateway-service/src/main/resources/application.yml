@@ -25,6 +25,12 @@ spring:
             - Path=/user/**
           filters:
             - StripPrefix=1 # 当访问到/user/login -> login 自动将user去掉
+        - id: finance-service_router
+          uri: lb://finance-service   # 转发到那个目的地
+          predicates:
+            - Path=/finance/**
+          filters:
+            - StripPrefix=1 # 当访问到/finance/xx -> 自动将finance去掉
         - id: test_router
           uri: http://www.aliyun.com
           predicates:
