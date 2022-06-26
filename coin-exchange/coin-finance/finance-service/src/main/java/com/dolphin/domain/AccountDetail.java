@@ -121,6 +121,14 @@ public class AccountDetail {
     @ApiModelProperty(value="日期")
     private Date created;
 
+    @TableField(exist = false)
+    @ApiModelProperty(value = "用户的名称")
+    private String username  ;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "用户的真实名称")
+    private String realName ;
+
     public static final String COL_ID = "id";
 
     public static final String COL_USER_ID = "user_id";
