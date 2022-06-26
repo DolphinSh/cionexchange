@@ -31,6 +31,12 @@
             <artifactId>coin-common</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--csv的导出工具类-->
+        <dependency>
+            <groupId>net.sf.supercsv</groupId>
+            <artifactId>super-csv</artifactId>
+            <version>${csv.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

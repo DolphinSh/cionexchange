@@ -65,7 +65,7 @@
         <el-form-item label=" ">
           <el-button icon="el-icon-search" @click="submitForm('financeRechargeForm')">搜索</el-button>
           <el-button icon="el-icon-download" type="primary"
-                     @click="exportExcel('financeRechargeForm','/cashRecharge/exportCNYRecharge','GCN充值审核')"
+                     @click="exportExcel('financeRechargeForm','/finance/cashRecharges/records/export','GCN充值审核')"
                      :disabled="listData.length == 0">导出
           </el-button>
         </el-form-item>

@@ -52,7 +52,7 @@
 
         <el-form-item label=" ">
           <el-button icon="el-icon-search" @click="submitForm('financialDetailsForm')">搜索</el-button>
-          <el-button icon="el-icon-download" type="primary" @click="exportExcel('financialDetailsForm','/cashRecharge/exportCNYRecharge','场外交易充值')" :disabled="listData.length == 0">导出</el-button>
+          <el-button icon="el-icon-download" type="primary" @click="exportExcel('financialDetailsForm','/finance/cashRecharges/records/export','场外交易充值')" :disabled="listData.length == 0">导出</el-button>
         </el-form-item>
 
     </el-form>

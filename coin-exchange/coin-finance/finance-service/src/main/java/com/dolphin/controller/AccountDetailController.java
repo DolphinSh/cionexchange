@@ -18,6 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+
 @RestController
 @RequestMapping("/accountDetails")
 @Api(tags = "流水记录的控制器")

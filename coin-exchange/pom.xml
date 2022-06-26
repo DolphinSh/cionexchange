@@ -53,6 +53,7 @@
         <hutool.version>4.1.2</hutool.version>
         <swagger2.version>2.9.2</swagger2.version>
         <spring-bootstrap.version>3.0.4</spring-bootstrap.version>
+        <csv.version>2.4.0</csv.version>
     </properties>
 
     <dependencies>
@@ -222,6 +223,11 @@
                 <version>${spring-bootstrap.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>net.sf.supercsv</groupId>
+                <artifactId>super-csv</artifactId>
+                <version>${csv.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
