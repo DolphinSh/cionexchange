@@ -89,6 +89,26 @@
                 </TableGenerateConfig>
               </value>
             </entry>
+            <entry key="coin-exchange:address_pool">
+              <value>
+                <TableGenerateConfig>
+                  <option name="generatedKey" value="id" />
+                  <option name="javaModelName" value="AddressPool" />
+                  <option name="moduleName" value="finance-service" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="coin-exchange:admin_address">
+              <value>
+                <TableGenerateConfig>
+                  <option name="generatedKey" value="id" />
+                  <option name="javaModelName" value="AdminAddress" />
+                  <option name="moduleName" value="finance-service" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
             <entry key="coin-exchange:admin_bank">
               <value>
                 <TableGenerateConfig>
