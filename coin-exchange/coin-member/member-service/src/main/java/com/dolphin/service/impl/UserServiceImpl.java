@@ -31,6 +31,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dolphin.mapper.UserMapper;
@@ -341,23 +343,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 通过用户id 批量查询用户的基础信息
      *
-     * @param ids 用户id
+     * @param ids      用户id
+     * @param userName 用户信息
+     * @param mobile   用户手机号
      * @return
      */
     @Override
-    public List<UserDto> getBasicUsers(List<Long> ids) {
-        if (CollectionUtils.isEmpty(ids)){
-            return Collections.emptyList();
+    public Map<Long, UserDto> getBasicUsers(List<Long> ids, String userName, String mobile) {
+        if (CollectionUtils.isEmpty(ids)&&StringUtils.isEmpty(userName)&&StringUtils.isEmpty(mobile)){
+            return Collections.emptyMap();
         }
         List<User> list = list(new LambdaQueryWrapper<User>()
-                .in(User::getId, ids)
+                .in(!CollectionUtils.isEmpty(ids),User::getId, ids)
+                .like(!StringUtils.isEmpty(userName),User::getUsername,userName)
+                .like(!StringUtils.isEmpty(mobile),User::getMobile,mobile)
         );
         if (CollectionUtils.isEmpty(list)){
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
         //将user -> userDto
         List<UserDto> userDtos = UserDtoMapper.INSTANCE.convert2Dto(list);
-        return userDtos;
+        Map<Long, UserDto> userDtoMappings = userDtos.stream().collect(Collectors.toMap(UserDto::getId, userDto -> userDto));
+        return userDtoMappings;
     }
 
     /**

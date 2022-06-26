@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.User;
 import com.dolphin.domain.UserAuthAuditRecord;
 import com.dolphin.domain.UserAuthInfo;
-import com.dolphin.domain.UserBank;
 import com.dolphin.dto.UserDto;
 import com.dolphin.feign.UserServiceFeign;
 import com.dolphin.model.*;
@@ -27,6 +26,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -322,14 +322,20 @@ public class UserController implements UserServiceFeign {
         return isOk ? R.ok() : R.fail("用户重置密码失败");
     }
 
+
     /**
-     * 用于admin-service里面 远程调用member-service
+     * * @param ids
+     * * @return Map<Long,UserDto> Long 用户id
+     * * UserDto 用户的基础信息
+     *
      * @param ids
+     * @param userName
+     * @param mobile
      * @return
      */
     @Override
-    public List<UserDto> getBasicUsers(List<Long> ids) {
-        List<UserDto> userDto = userService.getBasicUsers(ids);
-        return userDto;
+    public Map<Long, UserDto> getBasicUsers(List<Long> ids, String userName, String mobile) {
+        Map<Long, UserDto> basicUsers = userService.getBasicUsers(ids, userName, mobile);
+        return basicUsers;
     }
 }

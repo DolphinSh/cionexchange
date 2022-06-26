@@ -54,13 +54,15 @@ public class WorkIssueServiceImpl extends ServiceImpl<WorkIssueMapper, WorkIssue
             //使用userId 进行远程调用
         }*/
         List<Long> userIds = records.stream().map(WorkIssue::getUserId).collect(Collectors.toList());
-        List<UserDto> basicUsers = userServiceFeign.getBasicUsers(userIds);
+        //List<UserDto> basicUsers = userServiceFeign.getBasicUsers(userIds);
         //2远程调用
-        if (CollectionUtils.isEmpty(basicUsers)){
-            return pageData;
-        }
-        Map<Long, UserDto> idMapUserDtos = basicUsers.stream().collect(Collectors.toMap(
-                userDto -> userDto.getId(), userDto -> userDto));
+//        if (CollectionUtils.isEmpty(basicUsers)){
+//            return pageData;
+//        }
+//        Map<Long, UserDto> idMapUserDtos = basicUsers.stream().collect(Collectors.toMap(
+//                userDto -> userDto.getId(), userDto -> userDto))
+//               ;
+        Map<Long, UserDto> idMapUserDtos = userServiceFeign.getBasicUsers(userIds, null, null);
         //2 远程调用
         records.forEach(workIssue -> {
             UserDto userDto = idMapUserDtos.get(workIssue.getUserId());

@@ -7,6 +7,7 @@ import com.dolphin.dto.UserDto;
 import com.dolphin.model.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService extends IService<User>{
 
@@ -98,9 +99,12 @@ public interface UserService extends IService<User>{
     /**
      * 通过用户id 批量查询用户的基础信息
      * @param ids 用户id
+     * @param userName 用户信息
+     * @param mobile 用户手机号
      * @return
      */
-    List<UserDto> getBasicUsers(List<Long> ids);
+    //List<UserDto> getBasicUsers(List<Long> ids);
+    Map<Long,UserDto> getBasicUsers(List<Long> ids,String userName,String mobile);
 
     /**
      * 用户的注册
