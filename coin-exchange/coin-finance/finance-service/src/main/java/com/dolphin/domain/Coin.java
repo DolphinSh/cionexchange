@@ -24,7 +24,7 @@ public class Coin {
     /**
      * 币种ID
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value="币种ID")
     private Long id;
 

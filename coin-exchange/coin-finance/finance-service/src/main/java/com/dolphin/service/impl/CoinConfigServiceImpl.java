@@ -50,7 +50,7 @@ public class CoinConfigServiceImpl extends ServiceImpl<CoinConfigMapper, CoinCon
         coinConfig.setName(coin.getName());
         CoinConfig config = getById(coinConfig.getId());
         //没有保存，有新增
-        if (coin == null) {
+        if (config == null) {
             return save(coinConfig);
         } else {
             return updateById(coinConfig);
