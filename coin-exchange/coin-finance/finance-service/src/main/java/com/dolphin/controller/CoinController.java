@@ -82,4 +82,27 @@ public class CoinController {
         List<Coin> coins = coinService.getCoinsByStatus(status);
         return R.ok(coins);
     }
+
+    @PatchMapping
+    @ApiOperation(value = "修改币种的信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "coin", value = "coin的json数据")
+    })
+    public R update(@RequestBody @Validated Coin coin) {
+        boolean updateById = coinService.updateById(coin);
+        return updateById ? R.ok("修改币种的信息成功") : R.fail("修改币种的信息失败");
+    }
+
+    @PostMapping
+    @ApiOperation(value = "新增币种的信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "coin" ,value = "coin的json数据")
+    })
+    public R<Coin> save(@RequestBody @Validated  Coin coin){
+        coin.setStatus((byte)1);
+        boolean save = coinService.save(coin);
+        // coin新增成功后,会有Id ,这是mybatis-plus在新增成功后,
+        // 会自动的进行一个sql语句的查询,查询的结果就是id,之后把id设置给coin
+        return save ? R.ok(coin) : R.fail("新增币种的信息失败！");
+    }
 }

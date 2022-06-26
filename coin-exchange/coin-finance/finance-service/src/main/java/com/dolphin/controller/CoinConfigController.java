@@ -29,4 +29,14 @@ public class CoinConfigController {
         CoinConfig coinConfig =  coinConfigService.findByCoinId(coinId) ;
         return R.ok(coinConfig) ;
     }
+
+    @PatchMapping
+    @ApiOperation(value = "币种配置的修改操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "coinConfig" ,value ="coinConfig的json数据" )
+    })
+    public R  update(@RequestBody  @Validated  CoinConfig coinConfig){
+        boolean saveOrUpdate  =  coinConfigService.updateOrSave(coinConfig) ;
+        return saveOrUpdate ? R.ok() : R.fail("币种配置的修改操作失败");
+    }
 }

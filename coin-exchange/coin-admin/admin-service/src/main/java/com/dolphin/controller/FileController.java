@@ -45,7 +45,7 @@ public class FileController {
     @Value("${spring.cloud.alicloud.oss.endpoint}")
     private String endPoint;
 
-    @Value(("${oss.callback.url:http://125.69.97.197:9000}"))
+    @Value(("${oss.callback.url:http://118.116.83.236:9000}"))
     private String ossCallbackUrl;
 
     @ApiOperation(value = "上传文件")
