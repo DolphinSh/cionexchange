@@ -1,6 +1,7 @@
 package com.dolphin.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.domain.CashWithdrawAuditRecord;
 import com.dolphin.domain.CashWithdrawals;
 import com.dolphin.model.R;
 import com.dolphin.service.CashWithdrawalsService;
@@ -161,5 +162,12 @@ public class CashWithdrawalsController {
                 e.printStackTrace();
             }
         }
+    }
+
+    @PostMapping("/updateWithdrawalsStatus")
+    public R updateWithdrawalsStatus(@RequestBody CashWithdrawAuditRecord cashWithdrawAuditRecord) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOK = cashWithdrawalsService.updateWithdrawalsStatus(userId, cashWithdrawAuditRecord);
+        return isOK ? R.ok("审核成功"):R.fail("审核失败") ;
     }
 }

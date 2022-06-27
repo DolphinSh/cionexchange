@@ -1,9 +1,6 @@
 package com.dolphin.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -47,7 +44,7 @@ public class Account {
      */
     @TableField(value = "`status`")
     @ApiModelProperty(value="账号状态：1，正常；2，冻结；")
-    private Boolean status;
+    private byte status;
 
     /**
      * 币种可用金额
@@ -122,16 +119,24 @@ public class Account {
     /**
      * 更新时间
      */
-    @TableField(value = "last_update_time")
+    @TableField(value = "last_update_time",fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value="更新时间")
     private Date lastUpdateTime;
 
     /**
      * 创建时间
      */
-    @TableField(value = "created")
+    @TableField(value = "created",fill = FieldFill.INSERT)
     @ApiModelProperty(value="创建时间")
     private Date created;
+
+    @TableField(exist = false)
+    @ApiModelProperty(name = "卖出的价格")
+    private BigDecimal sellRate ;
+
+    @TableField(exist = false)
+    @ApiModelProperty(name = "买入的价格")
+    private BigDecimal buyRate ;
 
     public static final String COL_ID = "id";
 

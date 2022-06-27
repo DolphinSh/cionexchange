@@ -1,9 +1,16 @@
 package com.dolphin.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import com.alicp.jetcache.Cache;
+import com.alicp.jetcache.anno.CacheType;
+import com.alicp.jetcache.anno.CreateCache;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.domain.CashWithdrawAuditRecord;
 import com.dolphin.dto.UserDto;
 import com.dolphin.feign.UserServiceFeign;
+import com.dolphin.mapper.CashWithdrawAuditRecordMapper;
+import com.dolphin.service.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +34,15 @@ import org.springframework.util.CollectionUtils;
 public class CashWithdrawalsServiceImpl extends ServiceImpl<CashWithdrawalsMapper, CashWithdrawals> implements CashWithdrawalsService {
     @Autowired
     private UserServiceFeign userServiceFeign;
+
+    @Autowired
+    private CashWithdrawAuditRecordMapper cashWithdrawAuditRecordMapper;
+
+    @Autowired
+    private AccountService accountService;
+
+    @CreateCache(name = "CASH_WITHDRAWALS_LOCK:", expire = 100, timeUnit = TimeUnit.SECONDS, cacheType = CacheType.BOTH)
+    private Cache<String,String> cache;
 
     /**
      * 提现记录的查询
@@ -84,5 +101,52 @@ public class CashWithdrawalsServiceImpl extends ServiceImpl<CashWithdrawalsMappe
             });
         }
         return pageData;
+    }
+
+    /**
+     * 审核提现记录
+     *
+     * @param adminId                 操作审核管理员id
+     * @param cashWithdrawAuditRecord 提现审核记录数据
+     * @return 审核结果
+     */
+    @Override
+    public boolean updateWithdrawalsStatus(Long adminId, CashWithdrawAuditRecord cashWithdrawAuditRecord) {
+        boolean tryLockAndRun = cache.tryLockAndRun(cashWithdrawAuditRecord.getId().toString(), 300, TimeUnit.SECONDS, () -> {
+            CashWithdrawals cashWithdrawals = getById(cashWithdrawAuditRecord.getId());
+            if (cashWithdrawals == null) {
+                throw new IllegalArgumentException("现金的审核记录不存在！");
+            }
+            // 构建审核记录数据
+            CashWithdrawAuditRecord cashWithdrawAuditRecordNew = new CashWithdrawAuditRecord();
+            cashWithdrawAuditRecordNew.setAuditUserId(adminId);
+            cashWithdrawAuditRecordNew.setRemark(cashWithdrawAuditRecord.getRemark());
+            cashWithdrawAuditRecordNew.setCreated(DateUtil.date());
+            cashWithdrawAuditRecordNew.setStatus(cashWithdrawAuditRecord.getStatus());
+            Integer step = cashWithdrawals.getStep() + 1;
+            cashWithdrawAuditRecordNew.setStep(step.byteValue());
+            cashWithdrawAuditRecordNew.setOrderId(cashWithdrawals.getId());
+
+            // 记录保存成功
+            int count = cashWithdrawAuditRecordMapper.insert(cashWithdrawAuditRecordNew);
+            if (count > 0) {
+                cashWithdrawals.setStatus(cashWithdrawAuditRecord.getStatus());
+                cashWithdrawals.setRemark(cashWithdrawAuditRecord.getRemark());
+                cashWithdrawals.setLastTime(DateUtil.date());
+                cashWithdrawals.setAccountId(adminId); //
+                cashWithdrawals.setStep(step.byteValue());
+                boolean updateById = updateById(cashWithdrawals);   // 审核拒绝
+                if (updateById) {
+                    // 审核通过 withdrawals_out
+                    Boolean isPass = accountService.decreaseAccountAmount(
+                            adminId, cashWithdrawals.getUserId(), cashWithdrawals.getCoinId(),
+                            cashWithdrawals.getId(), cashWithdrawals.getNum(), cashWithdrawals.getFee(),
+                            cashWithdrawals.getRemark(), "withdrawals_out", (byte) 2
+                    );
+                }
+
+            }
+        });
+        return tryLockAndRun;
     }
 }

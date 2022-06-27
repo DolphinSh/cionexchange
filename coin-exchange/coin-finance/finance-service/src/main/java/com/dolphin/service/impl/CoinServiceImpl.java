@@ -51,4 +51,17 @@ public class CoinServiceImpl extends ServiceImpl<CoinMapper, Coin> implements Co
                 .eq(status != null, Coin::getStatus, status)
         );
     }
+
+    /**
+     * 通过货币名称查询该种货币
+     *
+     * @param coinName 货币名称
+     * @return
+     */
+    @Override
+    public Coin getCoinByCoinName(String coinName) {
+        return getOne(new LambdaQueryWrapper<Coin>()
+                .eq(!StringUtils.isEmpty(coinName),Coin::getName,coinName)
+        );
+    }
 }
