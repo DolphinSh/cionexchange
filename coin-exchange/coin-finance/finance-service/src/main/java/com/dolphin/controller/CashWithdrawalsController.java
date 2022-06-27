@@ -3,6 +3,7 @@ package com.dolphin.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashWithdrawAuditRecord;
 import com.dolphin.domain.CashWithdrawals;
+import com.dolphin.model.CashSellParam;
 import com.dolphin.model.R;
 import com.dolphin.service.CashWithdrawalsService;
 import com.dolphin.util.ReportCsvUtils;
@@ -182,5 +183,16 @@ public class CashWithdrawalsController {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         Page<CashWithdrawals> cashWithdrawalsPage = cashWithdrawalsService.findCashWithdrawals(page, userId, status);
         return R.ok(cashWithdrawalsPage);
+    }
+
+    @PostMapping("/sell")
+    @ApiOperation(value = "GCN的卖出操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "CashSellParam", value = "CashSellParam的JSON数据")
+    })
+    public R<Object> sell(@RequestBody @Validated CashSellParam cashSellParam) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOK = cashWithdrawalsService.sell(userId,cashSellParam);
+        return isOK ? R.ok("提交申请成功！"):R.fail("提交申请失败！");
     }
 }

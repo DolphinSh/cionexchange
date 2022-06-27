@@ -3,6 +3,9 @@ package com.dolphin.controller;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.UserBank;
+import com.dolphin.dto.UserBankDto;
+import com.dolphin.feign.UserBankServiceFeign;
+import com.dolphin.mappers.UserBankDtoMapper;
 import com.dolphin.model.R;
 import com.dolphin.service.UserBankService;
 import io.swagger.annotations.Api;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/userBanks")
 @Api(tags = "会员的银行卡管理")
-public class UserBankController {
+public class UserBankController implements UserBankServiceFeign {
     @Autowired
     private UserBankService userBankService;
 
@@ -67,5 +70,12 @@ public class UserBankController {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         boolean isOk = userBankService.bindBank(userId, userBank);
         return isOk ? R.ok("绑定银行卡成功！") : R.fail("绑定银行卡失败！");
+    }
+
+    @Override
+    public UserBankDto getUserBankInfo(Long userId) {
+        UserBank currentUserBank = userBankService.getCurrentUserBank(userId);
+        UserBankDto userBankDto = UserBankDtoMapper.INSTANCE.toConvertDto(currentUserBank);
+        return userBankDto ;
     }
 }

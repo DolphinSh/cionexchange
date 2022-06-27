@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashWithdrawAuditRecord;
 import com.dolphin.domain.CashWithdrawals;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.model.CashSellParam;
 
 public interface CashWithdrawalsService extends IService<CashWithdrawals> {
 
@@ -39,4 +40,12 @@ public interface CashWithdrawalsService extends IService<CashWithdrawals> {
      * @return
      */
     Page<CashWithdrawals> findCashWithdrawals(Page<CashWithdrawals> page, Long userId, Byte status);
+
+    /**
+     * 审核提现记录
+     * @param userId 用户的id
+     * @param cashSellParam GCN卖出的参数
+     * @return 审核提现记录结果
+     */
+    boolean sell(Long userId, CashSellParam cashSellParam);
 }
