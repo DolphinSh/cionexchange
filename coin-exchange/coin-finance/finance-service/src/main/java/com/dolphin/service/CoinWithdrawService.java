@@ -19,4 +19,13 @@ public interface CoinWithdrawService extends IService<CoinWithdraw>{
      * @return
      */
     Page<CoinWithdraw> findByPage(Page<CoinWithdraw> page, Long coinId, Long userId, String userName, String mobile, Byte status, String numMin, String numMax, String startTime, String endTime);
+
+    /**
+     * 查询用户的提币记录
+     * @param userId
+     * @param coinId
+     * @param page
+     * @return
+     */
+    Page<CoinWithdraw> findUserCoinWithdraw(Long userId, Long coinId, Page<CoinWithdraw> page);
 }

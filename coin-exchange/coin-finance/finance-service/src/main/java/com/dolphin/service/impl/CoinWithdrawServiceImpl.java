@@ -89,4 +89,20 @@ public class CoinWithdrawServiceImpl extends ServiceImpl<CoinWithdrawMapper, Coi
         }
         return coinWithdrawPage;
     }
+
+    /**
+     * 查询用户的提币记录
+     *
+     * @param userId
+     * @param coinId
+     * @param page
+     * @return
+     */
+    @Override
+    public Page<CoinWithdraw> findUserCoinWithdraw(Long userId, Long coinId, Page<CoinWithdraw> page) {
+        return page(page, new LambdaQueryWrapper<CoinWithdraw>()
+                .eq(CoinWithdraw::getUserId, userId)
+                .eq(coinId != null, CoinWithdraw::getCoinId, coinId)
+        );
+    }
 }

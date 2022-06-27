@@ -46,4 +46,22 @@ public class CoinWithdrawController {
                 mobile, status, numMin, numMax, startTime, endTime);
         return R.ok(pageData);
     }
+
+    /**
+     * size=10&current=1&coinId=
+     *
+     * @return
+     */
+    @GetMapping("/user/record")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "每页显示的条数"),
+            @ApiImplicitParam(name = "coinId", value = "币种的Id"),
+    })
+    @ApiOperation(value = "查询用户的提币记录")
+    public R<Page<CoinWithdraw>> findUserCoinWithdraw(@ApiIgnore Page<CoinWithdraw> page, Long coinId) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<CoinWithdraw> coinWithdrawPage = coinWithdrawService.findUserCoinWithdraw(userId, coinId, page);
+        return R.ok(coinWithdrawPage);
+    }
 }
