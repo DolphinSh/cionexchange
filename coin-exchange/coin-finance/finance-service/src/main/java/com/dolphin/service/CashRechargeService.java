@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashRecharge;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.dolphin.domain.CashRechargeAuditRecord;
+import com.dolphin.model.CashParam;
+import com.dolphin.vo.CashTradeVo;
 
 public interface CashRechargeService extends IService<CashRecharge>{
 
@@ -36,4 +38,12 @@ public interface CashRechargeService extends IService<CashRecharge>{
      * @return 是否审核成功
      */
     boolean cashRechargeAudit(Long userId, CashRechargeAuditRecord cashRechargeAuditRecord);
+
+    /**
+     * 进行一个GCN/充值/购买
+     * @param userId 用户的id
+     * @param cashParam 现金参数
+     * @return
+     */
+    CashTradeVo buy(Long userId, CashParam cashParam);
 }

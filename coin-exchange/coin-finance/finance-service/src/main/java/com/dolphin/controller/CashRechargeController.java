@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashRecharge;
 import com.dolphin.domain.CashRechargeAuditRecord;
 import com.dolphin.domain.CoinRecharge;
+import com.dolphin.model.CashParam;
 import com.dolphin.model.R;
 import com.dolphin.service.CashRechargeService;
 import com.dolphin.service.CoinRechargeService;
 import com.dolphin.util.ReportCsvUtils;
+import com.dolphin.vo.CashTradeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -42,7 +44,6 @@ public class CashRechargeController {
 
     @Autowired
     private CoinRechargeService coinRechargeService;
-
 
 
     @GetMapping("/records")
@@ -200,26 +201,37 @@ public class CashRechargeController {
 
     @ApiOperation(value = "现金的充值审核")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "cashRechargeAuditRecord" ,value = "现金的充值审核")
+            @ApiImplicitParam(name = "cashRechargeAuditRecord", value = "现金的充值审核")
     })
     @PostMapping("/cashRechargeUpdateStatus")
-    public R cashRechargeUpdateStatus(@RequestBody CashRechargeAuditRecord cashRechargeAuditRecord){
+    public R cashRechargeUpdateStatus(@RequestBody CashRechargeAuditRecord cashRechargeAuditRecord) {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        boolean isOk = cashRechargeService.cashRechargeAudit(userId,cashRechargeAuditRecord);
-        return isOk ? R.ok():R.fail("现金的充值审核失败！");
+        boolean isOk = cashRechargeService.cashRechargeAudit(userId, cashRechargeAuditRecord);
+        return isOk ? R.ok() : R.fail("现金的充值审核失败！");
     }
 
     @GetMapping("/user/records")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "current" ,value = "当前页") ,
-            @ApiImplicitParam(name = "size" ,value = "显示的条数") ,
-            @ApiImplicitParam(name = "coinId" ,value = "币种的Id") ,
+            @ApiImplicitParam(name = "current", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "显示的条数"),
+            @ApiImplicitParam(name = "coinId", value = "币种的Id"),
 
     })
     @ApiOperation(value = "查询用户某种币的Id")
-    public R<Page<CoinRecharge>> findUserCoinRecharge(@ApiIgnore Page<CoinRecharge> page , Long coinId){
-        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()) ;
-        Page<CoinRecharge> pageData = coinRechargeService.findUserCoinRecharge(page ,coinId, userId) ;
-        return R.ok(pageData) ;
+    public R<Page<CoinRecharge>> findUserCoinRecharge(@ApiIgnore Page<CoinRecharge> page, Long coinId) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<CoinRecharge> pageData = coinRechargeService.findUserCoinRecharge(page, coinId, userId);
+        return R.ok(pageData);
+    }
+
+    @PostMapping("/buy")
+    @ApiOperation(value = "GCN的充值操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cashParam", value = "现金交易的参数")
+    })
+    public R<CashTradeVo> buy(@RequestBody @Validated CashParam cashParam) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        CashTradeVo cashTradeVo = cashRechargeService.buy(userId, cashParam);
+        return R.ok(cashTradeVo);
     }
 }

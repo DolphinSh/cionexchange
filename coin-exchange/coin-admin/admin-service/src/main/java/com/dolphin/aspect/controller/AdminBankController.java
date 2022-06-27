@@ -1,7 +1,9 @@
-package com.dolphin.controller;
+package com.dolphin.aspect.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.AdminBank;
+import com.dolphin.dto.AdminBankDto;
+import com.dolphin.feign.AdminBankServiceFeign;
 import com.dolphin.model.R;
 import com.dolphin.service.AdminBankService;
 import io.swagger.annotations.Api;
@@ -14,10 +16,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/adminBanks")
 @Api(tags = "公司银行卡的配置")
-public class AdminBankController {
+public class AdminBankController implements AdminBankServiceFeign {
 
     @Autowired
     private AdminBankService adminBankService;
@@ -80,5 +84,15 @@ public class AdminBankController {
             return R.ok() ;
         }
         return R.fail("状态修改失败") ;
+    }
+
+    /**
+     * 获得所有的银行卡
+     * @return
+     */
+    @Override
+    public List<AdminBankDto> getAllAdminBanks() {
+        List<AdminBankDto> adminBankDtos = adminBankService.getAllAdminBanks();
+        return adminBankDtos;
     }
 }
