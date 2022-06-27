@@ -42,7 +42,7 @@ public class CashWithdrawalsServiceImpl extends ServiceImpl<CashWithdrawalsMappe
     private AccountService accountService;
 
     @CreateCache(name = "CASH_WITHDRAWALS_LOCK:", expire = 100, timeUnit = TimeUnit.SECONDS, cacheType = CacheType.BOTH)
-    private Cache<String,String> cache;
+    private Cache<String, String> cache;
 
     /**
      * 提现记录的查询
@@ -148,5 +148,20 @@ public class CashWithdrawalsServiceImpl extends ServiceImpl<CashWithdrawalsMappe
             }
         });
         return tryLockAndRun;
+    }
+
+    /**
+     * 查询当前用户的充值记录
+     *
+     * @param page   分页数据
+     * @param userId 用户的id
+     * @param status 充值的状态
+     * @return
+     */
+    @Override
+    public Page<CashWithdrawals> findCashWithdrawals(Page<CashWithdrawals> page, Long userId, Byte status) {
+        return page(page, new LambdaQueryWrapper<CashWithdrawals>()
+                .eq(CashWithdrawals::getUserId, userId)
+                .eq(status != null, CashWithdrawals::getStatus, status));
     }
 }

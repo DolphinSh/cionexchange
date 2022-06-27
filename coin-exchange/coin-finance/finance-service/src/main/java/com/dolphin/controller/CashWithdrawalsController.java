@@ -170,4 +170,17 @@ public class CashWithdrawalsController {
         boolean isOK = cashWithdrawalsService.updateWithdrawalsStatus(userId, cashWithdrawAuditRecord);
         return isOK ? R.ok("审核成功"):R.fail("审核失败") ;
     }
+
+    @GetMapping("/user/records")
+    @ApiOperation(value = "查询当前用户的充值记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current", value = "当前页"),
+            @ApiImplicitParam(name = "size", value = "每页显示的大小"),
+            @ApiImplicitParam(name = "status", value = "充值的状态"),
+    })
+    public R<Page<CashWithdrawals>> findUserCashRecharge(@ApiIgnore Page<CashWithdrawals> page, Byte status) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        Page<CashWithdrawals> cashWithdrawalsPage = cashWithdrawalsService.findCashWithdrawals(page, userId, status);
+        return R.ok(cashWithdrawalsPage);
+    }
 }

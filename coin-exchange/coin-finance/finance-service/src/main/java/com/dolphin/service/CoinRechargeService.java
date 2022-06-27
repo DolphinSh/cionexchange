@@ -20,4 +20,13 @@ public interface CoinRechargeService extends IService<CoinRecharge>{
      * @return
      */
     Page<CoinRecharge> findByPage(Page<CoinRecharge> page, Long coinId, Long userId, String userName, String mobile, Byte status, String numMin, String numMax, String startTime, String endTime);
+
+    /**
+     * 查询用户充币记录
+     * @param page 分页参数
+     * @param coinId 币种的Id
+     * @param userId 用户的ID
+     * @return
+     */
+    Page<CoinRecharge> findUserCoinRecharge(Page<CoinRecharge> page, Long coinId, Long userId);
 }

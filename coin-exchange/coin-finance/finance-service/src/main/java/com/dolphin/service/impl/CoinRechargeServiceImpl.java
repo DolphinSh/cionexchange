@@ -77,4 +77,20 @@ public class CoinRechargeServiceImpl extends ServiceImpl<CoinRechargeMapper, Coi
         }
         return coinRechargePage;
     }
+
+    /**
+     * 查询用户充币记录
+     *
+     * @param page   分页参数
+     * @param coinId 币种的Id
+     * @param userId 用户的ID
+     * @return
+     */
+    @Override
+    public Page<CoinRecharge> findUserCoinRecharge(Page<CoinRecharge> page, Long coinId, Long userId) {
+        return page(page, new LambdaQueryWrapper<CoinRecharge>()
+                .eq(coinId != null, CoinRecharge::getCoinId, coinId)
+                .eq(CoinRecharge::getUserId, userId)
+        );
+    }
 }

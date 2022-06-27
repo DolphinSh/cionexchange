@@ -30,4 +30,13 @@ public interface CashWithdrawalsService extends IService<CashWithdrawals> {
      * @return 审核结果
      */
     boolean updateWithdrawalsStatus(Long adminId, CashWithdrawAuditRecord cashWithdrawAuditRecord);
+
+    /**
+     * 查询当前用户的充值记录
+     * @param page 分页数据
+     * @param userId 用户的id
+     * @param status 充值的状态
+     * @return
+     */
+    Page<CashWithdrawals> findCashWithdrawals(Page<CashWithdrawals> page, Long userId, Byte status);
 }
