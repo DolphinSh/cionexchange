@@ -70,4 +70,15 @@ public class TradeAreaController {
         boolean update = tradeAreaService.updateById(tradeArea);
         return update ? R.ok() : R.fail("修改交易区域的状态失败!");
     }
+
+    @GetMapping("/all")
+    @ApiOperation(value = "查询交易区域")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "status", value = "交易区域的状态")
+    })
+    @PreAuthorize("hasAuthority('trade_area_query')")
+    public R<List<TradeArea>> findAll(Byte status) {
+        List<TradeArea> tradeAreas = tradeAreaService.findAll(status);
+        return R.ok(tradeAreas);
+    }
 }
