@@ -237,6 +237,13 @@ public class CashWithdrawalsServiceImpl extends ServiceImpl<CashWithdrawalsMappe
         boolean save = save(cashWithdrawals);
         if (save){
             //扣减总资产--account-->accountDetail
+            accountService.lockUserAmount(userId,
+                    cashWithdrawals.getCoinId(),
+                    cashWithdrawals.getMum(),
+                    "withdrawals_out",
+                    cashWithdrawals.getId(),
+                    cashWithdrawals.getFee()
+            );
         }
         return save;
     }

@@ -145,6 +145,51 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     }
 
     /**
+     * 暂时锁定用户的资产
+     *
+     * @param userId  用户的id
+     * @param coinId  币种的id
+     * @param mum     锁定的金额
+     * @param type    资金流水的类型
+     * @param orderId 订单的Id
+     * @param fee     本次操作的手续费
+     */
+    @Override
+    public void lockUserAmount(Long userId, Long coinId, BigDecimal mum, String type, Long orderId, BigDecimal fee) {
+        Account coinAccount = getCoinAccount(coinId, userId);
+        if (coinAccount == null) {
+            throw new IllegalArgumentException("您输入的资产类型不存在!");
+        }
+        BigDecimal balanceAmount = coinAccount.getBalanceAmount();
+        if (balanceAmount.compareTo(mum) < 0) { // 库存的操作
+            throw new IllegalArgumentException("账号的资金不足");
+        }
+        coinAccount.setBalanceAmount(balanceAmount.subtract(mum));
+        coinAccount.setFreezeAmount(coinAccount.getFreezeAmount().add(mum));
+        boolean updateById = updateById(coinAccount);
+        //资产操作后 增加流水记录
+        if (updateById){
+            AccountDetail accountDetail = new AccountDetail(
+                    null,
+                    userId,
+                    coinId,
+                    coinAccount.getId(),
+                    coinAccount.getId(), // 如果该订单时邀请奖励,有我们的ref的account ,否则,值和account 是一样的
+                    orderId,
+                    (byte) 2,
+                    type,
+                    mum,
+                    fee,
+                    "用户提现",
+                    null,
+                    null,
+                    null
+            );
+            accountDetailService.save(accountDetail);
+        }
+    }
+
+    /**
      * 获取用户的某种币的资产
      *
      * @param coinId

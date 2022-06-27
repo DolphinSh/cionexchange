@@ -44,4 +44,15 @@ public interface AccountService extends IService<Account>{
      * @return
      */
     Account findByUserAndCoin(Long userId, String coinName);
+
+    /**
+     * 暂时锁定用户的资产
+     * @param userId 用户的id
+     * @param coinId 币种的id
+     * @param mum 锁定的金额
+     * @param type 资金流水的类型
+     * @param orderId 订单的Id
+     * @param fee 本次操作的手续费
+     */
+    void lockUserAmount(Long userId, Long coinId, BigDecimal mum, String type, Long orderId, BigDecimal fee);
 }
