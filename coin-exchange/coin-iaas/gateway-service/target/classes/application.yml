@@ -31,6 +31,12 @@ spring:
             - Path=/finance/**
           filters:
             - StripPrefix=1 # 当访问到/finance/xx -> 自动将finance去掉
+        - id: exchange-service_router
+          uri: lb://exchange-service   # 转发到那个目的地
+          predicates:
+            - Path=/exchange/**
+          filters:
+            - StripPrefix=1 # 当访问到/exchange/xx -> 自动将exchange去掉
         - id: test_router
           uri: http://www.aliyun.com
           predicates:

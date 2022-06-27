@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: exchange-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      server-addr: nacos-server:8848
+      config:
+        file-extension: yaml
+        #去nacos-server 拉取配置文件exchange-service-dev.yaml
