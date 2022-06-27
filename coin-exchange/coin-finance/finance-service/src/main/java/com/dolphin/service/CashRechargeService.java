@@ -3,6 +3,8 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashRecharge;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.domain.CashRechargeAuditRecord;
+
 public interface CashRechargeService extends IService<CashRecharge>{
 
     /**
@@ -26,4 +28,12 @@ public interface CashRechargeService extends IService<CashRecharge>{
                                   Byte status, String numMin,
                                   String numMax,
                                   String startTime, String endTime);
+
+    /**
+     * 现金的充值审核
+     * @param userId 审核人Id
+     * @param cashRechargeAuditRecord 审核的数据
+     * @return 是否审核成功
+     */
+    boolean cashRechargeAudit(Long userId, CashRechargeAuditRecord cashRechargeAuditRecord);
 }

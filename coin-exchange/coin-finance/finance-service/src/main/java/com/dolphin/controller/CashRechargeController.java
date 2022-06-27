@@ -3,6 +3,7 @@ package com.dolphin.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.CashRecharge;
+import com.dolphin.domain.CashRechargeAuditRecord;
 import com.dolphin.model.R;
 import com.dolphin.service.CashRechargeService;
 import com.dolphin.util.ReportCsvUtils;
@@ -189,7 +190,16 @@ public class CashRechargeController {
                 e.printStackTrace();
             }
         }
+    }
 
-
+    @ApiOperation(value = "现金的充值审核")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "cashRechargeAuditRecord" ,value = "现金的充值审核")
+    })
+    @PostMapping("/cashRechargeUpdateStatus")
+    public R cashRechargeUpdateStatus(@RequestBody CashRechargeAuditRecord cashRechargeAuditRecord){
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        boolean isOk = cashRechargeService.cashRechargeAudit(userId,cashRechargeAuditRecord);
+        return isOk ? R.ok():R.fail("现金的充值审核失败！");
     }
 }

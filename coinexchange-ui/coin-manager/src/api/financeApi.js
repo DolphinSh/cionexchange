@@ -23,7 +23,7 @@ export const financeApi = {
   */
   checkFinanceRecharge(data){
     return request({
-      url:'/finance/cashRecharge/cashRechargeUpdateStatus',
+      url:'/finance/cashRecharges/cashRechargeUpdateStatus',
       method:'post',
       data:data
     })
