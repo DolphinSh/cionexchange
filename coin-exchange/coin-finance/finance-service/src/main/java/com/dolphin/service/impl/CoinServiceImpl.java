@@ -2,16 +2,20 @@ package com.dolphin.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.dto.CoinDto;
+import com.dolphin.mappers.CoinMappersDto;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dolphin.mapper.CoinMapper;
 import com.dolphin.domain.Coin;
 import com.dolphin.service.CoinService;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class CoinServiceImpl extends ServiceImpl<CoinMapper, Coin> implements CoinService {
@@ -63,5 +67,21 @@ public class CoinServiceImpl extends ServiceImpl<CoinMapper, Coin> implements Co
         return getOne(new LambdaQueryWrapper<Coin>()
                 .eq(!StringUtils.isEmpty(coinName),Coin::getName,coinName)
         );
+    }
+
+    /**
+     * 使用coinId 查询币种
+     *
+     * @param coinIds
+     * @return
+     */
+    @Override
+    public List<CoinDto> findList(List<Long> coinIds) {
+        List<Coin> coins = super.listByIds(coinIds);
+        if (CollectionUtils.isEmpty(coins)){
+            return Collections.emptyList();
+        }
+        List<CoinDto> coinDtos = CoinMappersDto.INSTANCE.toConvertDto(coins);
+        return coinDtos;
     }
 }

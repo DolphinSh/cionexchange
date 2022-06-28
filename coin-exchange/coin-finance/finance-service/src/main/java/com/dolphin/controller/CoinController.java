@@ -3,6 +3,8 @@ package com.dolphin.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.dolphin.domain.Coin;
+import com.dolphin.dto.CoinDto;
+import com.dolphin.feign.CoinServiceFeign;
 import com.dolphin.model.R;
 import com.dolphin.service.CoinService;
 import io.swagger.annotations.Api;
@@ -19,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/coins")
 @Api(tags = "数字货币的数据接口")
-public class CoinController {
+public class CoinController implements CoinServiceFeign {
 
     @Autowired
     private CoinService coinService;
@@ -104,5 +106,11 @@ public class CoinController {
         // coin新增成功后,会有Id ,这是mybatis-plus在新增成功后,
         // 会自动的进行一个sql语句的查询,查询的结果就是id,之后把id设置给coin
         return save ? R.ok(coin) : R.fail("新增币种的信息失败！");
+    }
+
+    @Override
+    public List<CoinDto> findCoins(List<Long> coinIds) {
+        List<CoinDto> coinDtos =  coinService.findList(coinIds);
+        return coinDtos;
     }
 }

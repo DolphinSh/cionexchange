@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.Coin;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.dto.CoinDto;
 
 import java.util.List;
 
@@ -33,4 +34,11 @@ public interface CoinService extends IService<Coin>{
      * @return
      */
     Coin getCoinByCoinName(String coinName);
+
+    /**
+     * 使用coinId 查询币种
+     * @param coinIds
+     * @return
+     */
+    List<CoinDto> findList(List<Long> coinIds);
 }

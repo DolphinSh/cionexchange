@@ -1,19 +1,32 @@
 package com.dolphin.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.dto.CoinDto;
+import com.dolphin.feign.CoinServiceFeign;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dolphin.mapper.MarketMapper;
 import com.dolphin.domain.Market;
 import com.dolphin.service.MarketService;
+import org.springframework.util.CollectionUtils;
 
 @Service
+@Slf4j
 public class MarketServiceImpl extends ServiceImpl<MarketMapper, Market> implements MarketService {
+
+    @Autowired
+    private CoinServiceFeign coinServiceFeign;
 
     /**
      * 交易市场的分页查询
@@ -30,5 +43,32 @@ public class MarketServiceImpl extends ServiceImpl<MarketMapper, Market> impleme
                         .eq(tradeAreaId != null, Market::getTradeAreaId, tradeAreaId)
                         .eq(status != null, Market::getStatus, status)
         );
+    }
+
+    @Override
+    public boolean save(Market entity) {
+        log.info("开始新增市场数据{}", JSON.toJSONString(entity));
+        @NotBlank Long sellCoinId = entity.getSellCoinId(); // /报价货币
+        @NotNull Long buyCoinId = entity.getBuyCoinId(); // 基础货币
+        List<CoinDto> coins = coinServiceFeign.findCoins(Arrays.asList(sellCoinId, buyCoinId));
+        if (CollectionUtils.isEmpty(coins)) {
+            throw new IllegalArgumentException("货币输入错误");
+        }
+        CoinDto coinDto = coins.get(0);
+        CoinDto sellCoin = null;
+        CoinDto buyCoin = null;
+        if (coinDto.getId().equals(sellCoinId)) {
+            sellCoin = coinDto;
+            buyCoin = coins.get(1);
+        } else {
+            sellCoin = coins.get(1);
+            buyCoin = coinDto;
+        }
+        entity.setName(sellCoin.getName() + "/" + buyCoin.getName()); // 交易市场的名称  报价货币/基础货币
+        entity.setTitle(sellCoin.getTitle() + "/" + buyCoin.getTitle()); // 交易市场的标题 报价货币/基础货币
+        entity.setSymbol(sellCoin.getName() + buyCoin.getName()); // 交易市场的标识 报价货币基础货币
+        entity.setImg(sellCoin.getImg()); // 交易市场的图标
+
+        return super.save(entity);
     }
 }
