@@ -2,6 +2,7 @@ package com.dolphin.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.dolphin.domain.Market;
@@ -73,5 +74,16 @@ public class MarketController {
     public R update(@RequestBody Market market) {
         boolean updateById = marketService.updateById(market);
         return updateById ? R.ok("修改市场成功！"):R.fail("修改市场失败！");
+    }
+
+    /**
+     * 查询所有的市场数据
+     *
+     * @return
+     */
+    @GetMapping("/all")
+    @ApiOperation(value = "查询所有的交易市场")
+    public R<List<Market>> listMarks() {
+        return R.ok(marketService.list());
     }
 }
