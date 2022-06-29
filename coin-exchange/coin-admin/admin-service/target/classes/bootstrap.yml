@@ -8,3 +8,7 @@ spring:
         file-extension: yaml
   profiles:
     active: dev
+  servlet:
+    multipart:
+      max-file-size: 2000MB
+      max-request-size: 2500MB

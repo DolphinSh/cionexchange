@@ -1,4 +1,4 @@
-package com.dolphin.aspect.controller;
+package com.dolphin.controller;
 
 import com.dolphin.domain.SysMenu;
 import com.dolphin.model.R;

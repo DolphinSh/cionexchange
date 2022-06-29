@@ -31,4 +31,18 @@ public class WebConfigServiceImpl extends ServiceImpl<WebConfigMapper, WebConfig
                 .eq(!StringUtils.isEmpty(type), WebConfig::getType, type)
         );
     }
+
+    /**
+     * 获取pc端的banner图
+     *
+     * @return
+     */
+    @Override
+    public List<WebConfig> getPcBanners() {
+        return list(new LambdaQueryWrapper<WebConfig>()
+                .eq(WebConfig::getType, "WEB_BANNER")
+                .eq(WebConfig::getStatus, 1)
+                .orderByAsc(WebConfig::getSort)
+        );
+    }
 }

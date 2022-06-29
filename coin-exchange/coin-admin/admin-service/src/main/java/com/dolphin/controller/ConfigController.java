@@ -1,7 +1,8 @@
-package com.dolphin.aspect.controller;
+package com.dolphin.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.Config;
+import com.dolphin.domain.WebConfig;
 import com.dolphin.model.R;
 import com.dolphin.service.ConfigService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/configs")
@@ -66,4 +69,6 @@ public class ConfigController {
         }
         return R.fail("修改失败");
     }
+
+
 }

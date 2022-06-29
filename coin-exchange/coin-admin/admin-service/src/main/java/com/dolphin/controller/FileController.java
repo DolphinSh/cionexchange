@@ -1,4 +1,4 @@
-package com.dolphin.aspect.controller;
+package com.dolphin.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
@@ -63,7 +63,7 @@ public class FileController {
     @ApiOperation(value = "文件的上传获取票据")
     public R<Object> preUploadPolicy(){
         String fileDir = DateUtil.today().replace("-", "/") + '/';
-        Map<String, String> policy = getPolicy(30L, 3 * 1024 * 1024L, fileDir);
+        Map<String, String> policy = getPolicy(30L, 10 * 1024 * 1024L, fileDir);
         if (!MapUtil.isEmpty(policy)) {
             return R.ok(policy);
         }else {
