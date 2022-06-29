@@ -15,4 +15,11 @@ public interface NoticeService extends IService<Notice>{
      * @return
      */
     Page<Notice> findByPage(Page<Notice> page, String title, String startTime, String endTime, Integer status);
+
+    /**
+     * 给用户/会员展示的
+     * @param page
+     * @return
+     */
+    Page<Notice> findNoticeForSimple(Page<Notice> page);
 }
