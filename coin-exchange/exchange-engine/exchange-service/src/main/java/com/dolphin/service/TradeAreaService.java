@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.TradeArea;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.vo.TradeAreaMarketVo;
 
 import java.util.List;
 
@@ -23,4 +24,17 @@ public interface TradeAreaService extends IService<TradeArea>{
      * @return 查询交易区域结果
      */
     List<TradeArea> findAll(Byte status);
+
+    /**
+     * 查询所有的交易区域以及市场
+     * @return
+     */
+    List<TradeAreaMarketVo> findTradeAreaMarket();
+
+    /**
+     * 查询用户收藏的交易市场
+     * @param userId
+     * @return
+     */
+    List<TradeAreaMarketVo> getUserFavoriteMarkets(Long userId);
 }

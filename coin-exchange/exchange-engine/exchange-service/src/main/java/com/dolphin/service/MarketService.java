@@ -3,6 +3,9 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.Market;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
+
 public interface MarketService extends IService<Market>{
 
     /**
@@ -13,4 +16,11 @@ public interface MarketService extends IService<Market>{
      * @return
      */
     Page<Market> findByPage(Page<Market> page, Long tradeAreaId, Byte status);
+
+    /**
+     * 使用交易区域Id 查询该区域下的市场
+     * @param id
+     * @return
+     */
+    List<Market> getMarkersByTradeAreaId(Long id);
 }

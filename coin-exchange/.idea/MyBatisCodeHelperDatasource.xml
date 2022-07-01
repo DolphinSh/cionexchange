@@ -546,8 +546,11 @@
             <entry key="coin-exchange:user_favorite_market">
               <value>
                 <TableGenerateConfig>
+                  <option name="generatedKey" value="" />
                   <option name="javaModelName" value="UserFavoriteMarket" />
-                  <option name="moduleName" value="member-service" />
+                  <option name="moduleName" value="exchange-service" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
                   <option name="useActualColumnName" value="false" />
                 </TableGenerateConfig>
               </value>

@@ -7,6 +7,7 @@ import com.dolphin.feign.UserServiceFeign;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import com.dolphin.service.WorkIssueService;
 import org.springframework.util.CollectionUtils;
 
 @Service
-public class WorkIssueServiceImpl extends ServiceImpl<WorkIssueMapper, WorkIssue> implements WorkIssueService{
+public class WorkIssueServiceImpl extends ServiceImpl<WorkIssueMapper, WorkIssue> implements WorkIssueService {
 
     @Autowired
     private UserServiceFeign userServiceFeign;
@@ -43,7 +44,7 @@ public class WorkIssueServiceImpl extends ServiceImpl<WorkIssueMapper, WorkIssue
         );
         List<WorkIssue> records = pageData.getRecords();
         //空值处理
-        if (CollectionUtils.isEmpty(records)){
+        if (CollectionUtils.isEmpty(records)) {
             return pageData;
         }
         //不为空，远程调用member-service
@@ -66,9 +67,25 @@ public class WorkIssueServiceImpl extends ServiceImpl<WorkIssueMapper, WorkIssue
         //2 远程调用
         records.forEach(workIssue -> {
             UserDto userDto = idMapUserDtos.get(workIssue.getUserId());
-            workIssue.setUsername(userDto == null ? "测试用户": userDto.getUsername());
-            workIssue.setRealName(userDto == null ? "测试用户": userDto.getRealName());
+            workIssue.setUsername(userDto == null ? "测试用户" : userDto.getUsername());
+            workIssue.setRealName(userDto == null ? "测试用户" : userDto.getRealName());
         });
         return pageData;
+    }
+
+    /**
+     * 前台系统查询客户工单
+     *
+     * @param page
+     * @param userId 会员的Id
+     * @return
+     */
+    @Override
+    public Page<WorkIssue> getIssueList(Page<WorkIssue> page, Long userId) {
+        return page(page, new LambdaQueryWrapper<WorkIssue>()
+                .eq(WorkIssue::getUserId, userId)
+//                .eq(WorkIssue::getStatus, 1)
+//                .orderByAsc(WorkIssue::getStatus)
+        );
     }
 }

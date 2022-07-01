@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.TradeArea;
 import com.dolphin.model.R;
 import com.dolphin.service.TradeAreaService;
+import com.dolphin.vo.TradeAreaMarketVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -81,4 +82,20 @@ public class TradeAreaController {
         List<TradeArea> tradeAreas = tradeAreaService.findAll(status);
         return R.ok(tradeAreas);
     }
+
+    @GetMapping("/markets")
+    @ApiOperation(value = "查询交易区域,以及区域下的市场")
+    public R<List<TradeAreaMarketVo>> getTradeAreaMarkets(){
+        List<TradeAreaMarketVo> tradeAreaMarketVos = tradeAreaService.findTradeAreaMarket();
+        return R.ok(tradeAreaMarketVos);
+    }
+
+    @GetMapping("/market/favorite")
+    @ApiOperation(value = "用户收藏的交易市场")
+    public R<List<TradeAreaMarketVo>> getUserFavoriteMarkets(){
+        Long userId =  Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        List<TradeAreaMarketVo> tradeAreaMarketVos =  tradeAreaService.getUserFavoriteMarkets(userId) ;
+        return R.ok(tradeAreaMarketVos) ;
+    }
+
 }

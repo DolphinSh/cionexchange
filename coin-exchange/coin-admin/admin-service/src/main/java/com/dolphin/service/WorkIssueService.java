@@ -18,4 +18,12 @@ public interface WorkIssueService extends IService<WorkIssue>{
      * @return
      */
     Page<WorkIssue> findByPage(Page<WorkIssue> page, Integer status, String startTime, String endTime);
+
+    /**
+     * 前台系统查询客户工单
+     * @param page
+     * @param userId 会员的Id
+     * @return
+     */
+    Page<WorkIssue> getIssueList(Page<WorkIssue> page, Long userId);
 }

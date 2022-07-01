@@ -45,6 +45,21 @@ public class MarketServiceImpl extends ServiceImpl<MarketMapper, Market> impleme
         );
     }
 
+    /**
+     * 使用交易区域Id 查询该区域下的市场
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Market> getMarkersByTradeAreaId(Long id) {
+        return list(new LambdaQueryWrapper<Market>()
+                .eq(Market::getTradeAreaId, id)
+                .eq(Market::getStatus, 1)
+                .orderByAsc(Market::getSort)
+        );
+    }
+
     @Override
     public boolean save(Market entity) {
         log.info("开始新增市场数据{}", JSON.toJSONString(entity));
