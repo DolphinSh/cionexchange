@@ -60,6 +60,19 @@ public class MarketServiceImpl extends ServiceImpl<MarketMapper, Market> impleme
         );
     }
 
+    /**
+     * 使用交易对查询市场
+     *
+     * @param symbol
+     * @return
+     */
+    @Override
+    public Market getMarkerBySymbol(String symbol) {
+        return getOne(new LambdaQueryWrapper<Market>()
+                .eq(Market::getSymbol, symbol)
+        );
+    }
+
     @Override
     public boolean save(Market entity) {
         log.info("开始新增市场数据{}", JSON.toJSONString(entity));

@@ -23,4 +23,11 @@ public interface MarketService extends IService<Market>{
      * @return
      */
     List<Market> getMarkersByTradeAreaId(Long id);
+
+    /**
+     *使用交易对查询市场
+     * @param symbol
+     * @return
+     */
+    Market getMarkerBySymbol(String symbol);
 }
