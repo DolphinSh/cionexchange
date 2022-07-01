@@ -2,6 +2,7 @@ package com.dolphin.service;
 
 import com.dolphin.domain.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.vo.UserTotalAccountVo;
 
 import java.math.BigDecimal;
 
@@ -55,4 +56,11 @@ public interface AccountService extends IService<Account>{
      * @param fee 本次操作的手续费
      */
     void lockUserAmount(Long userId, Long coinId, BigDecimal mum, String type, Long orderId, BigDecimal fee);
+
+    /**
+     * 计算用户的总资产
+     * @param userId
+     * @return
+     */
+    UserTotalAccountVo getUserTotalAccount(Long userId);
 }

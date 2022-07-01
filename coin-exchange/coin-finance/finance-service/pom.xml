@@ -33,6 +33,11 @@
         </dependency>
         <dependency>
             <groupId>com.dolphin</groupId>
+            <artifactId>exchange-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dolphin</groupId>
             <artifactId>coin-common</artifactId>
             <version>1.0</version>
         </dependency>

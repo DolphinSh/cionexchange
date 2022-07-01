@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.dto.CoinDto;
+import com.dolphin.dto.MarketDto;
 import com.dolphin.feign.CoinServiceFeign;
+import com.dolphin.mappers.MarketDtoMappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,25 @@ public class MarketServiceImpl extends ServiceImpl<MarketMapper, Market> impleme
         return getOne(new LambdaQueryWrapper<Market>()
                 .eq(Market::getSymbol, symbol)
         );
+    }
+
+    /**
+     * 使用报价货币和基础货币查询市场
+     *
+     * @param buyCoinId
+     * @param sellCoinId
+     * @return
+     */
+    @Override
+    public MarketDto findByCoinId(Long buyCoinId, Long sellCoinId) {
+        LambdaQueryWrapper<Market> eq = new LambdaQueryWrapper<Market>()
+                .eq(buyCoinId != null, Market::getBuyCoinId, buyCoinId)
+                .eq(sellCoinId != null, Market::getSellCoinId, sellCoinId)
+                .eq(Market::getStatus, 1);
+        Market market = getOne(eq);
+        MarketDtoMappers instance = MarketDtoMappers.INSTANCE;
+        MarketDto marketDto = instance.toConvertDto(market);
+        return marketDto;
     }
 
     @Override
