@@ -27,4 +27,32 @@ public class TurnoverOrderServiceImpl extends ServiceImpl<TurnoverOrderMapper, T
         //return page(page,new LambdaQueryWrapper<TurnoverOrder>().eq());
         return null;
     }
+
+    /**
+     * 获取买入的订单的成功的记录
+     *
+     * @param orderId
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<TurnoverOrder> getBuyTurnoverOrder(Long orderId, Long userId) {
+        return list(new LambdaQueryWrapper<TurnoverOrder>().eq(TurnoverOrder::getOrderId, orderId)
+                .eq(TurnoverOrder::getBuyUserId, userId)
+        );
+    }
+
+    /**
+     * 获取卖出订单的成交记录
+     *
+     * @param orderId
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<TurnoverOrder> getSellTurnoverOrder(Long orderId, Long userId) {
+        return list(new LambdaQueryWrapper<TurnoverOrder>().eq(TurnoverOrder::getOrderId, orderId)
+                .eq(TurnoverOrder::getSellUserId, userId)
+        );
+    }
 }

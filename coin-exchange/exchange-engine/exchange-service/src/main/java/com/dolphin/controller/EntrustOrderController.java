@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.EntrustOrder;
 import com.dolphin.model.R;
 import com.dolphin.service.EntrustOrderService;
+import com.dolphin.vo.TradeEntrustOrderVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -32,5 +33,29 @@ public class EntrustOrderController {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()) ;
         Page<EntrustOrder> entrustOrderPage = entrustOrderService.findByPage(page,userId,symbol,type) ;
         return R.ok(entrustOrderPage) ;
+    }
+
+    @GetMapping("/history/{symbol}")
+    @ApiOperation(value = "查询历史的委托单记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "当前页") ,
+            @ApiImplicitParam(name = "size",value = "条数") ,
+    })
+    public R<Page<TradeEntrustOrderVo>> historyEntrustOrder(@ApiIgnore Page<EntrustOrder> page , @PathVariable("symbol") String symbol){
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()) ;
+        Page<TradeEntrustOrderVo> pageData = entrustOrderService.getHistoryEntrustOrder(page,symbol,userId) ;
+        return R.ok(pageData) ;
+    }
+
+    @GetMapping("/{symbol}")
+    @ApiOperation(value = "查询未的委托单记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "当前页") ,
+            @ApiImplicitParam(name = "size",value = "条数") ,
+    })
+    public R<Page<TradeEntrustOrderVo>> entrustOrders(@ApiIgnore Page<EntrustOrder> page , @PathVariable("symbol") String symbol){
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()) ;
+        Page<TradeEntrustOrderVo> pageData = entrustOrderService.getEntrustOrder(page,symbol,userId) ;
+        return R.ok(pageData) ;
     }
 }
