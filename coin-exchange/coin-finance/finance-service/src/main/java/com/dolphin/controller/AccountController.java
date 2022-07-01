@@ -3,6 +3,7 @@ package com.dolphin.controller;
 import com.dolphin.domain.Account;
 import com.dolphin.model.R;
 import com.dolphin.service.AccountService;
+import com.dolphin.vo.SymbolAssetVo;
 import com.dolphin.vo.UserTotalAccountVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -42,5 +43,13 @@ public class AccountController {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         UserTotalAccountVo userTotalAccountVo = accountService.getUserTotalAccount(userId);
         return R.ok(userTotalAccountVo);
+    }
+
+    @GetMapping("/asset/{symbol}")
+    @ApiOperation(value = "交易货币的资产")
+    public R<SymbolAssetVo> getSymbolAssert(@PathVariable("symbol") String symbol) {
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+        SymbolAssetVo symbolAssetVo = accountService.getSymbolAssert(symbol, userId);
+        return R.ok(symbolAssetVo);
     }
 }

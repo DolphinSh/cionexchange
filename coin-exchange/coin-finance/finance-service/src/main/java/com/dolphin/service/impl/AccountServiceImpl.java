@@ -12,6 +12,7 @@ import com.dolphin.service.AccountDetailService;
 import com.dolphin.service.CoinService;
 import com.dolphin.service.ConfigService;
 import com.dolphin.vo.AccountVo;
+import com.dolphin.vo.SymbolAssetVo;
 import com.dolphin.vo.UserTotalAccountVo;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -276,6 +279,42 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         userTotalAccountVo.setAmountUs(basicCoin);//总的平台计算的币种（基础币）
         userTotalAccountVo.setAssertList(asserList);
         return userTotalAccountVo;
+    }
+
+    /**
+     * 统计用户交易对的资产
+     *
+     * @param symbol 交易对的Symbol
+     * @param userId 用户的Id
+     * @return
+     */
+    @Override
+    public SymbolAssetVo getSymbolAssert(String symbol, Long userId) {
+        /**
+         * 远程调用获取市场
+         */
+        MarketDto marketDto = marketServiceFeign.findBySymbol(symbol);
+        SymbolAssetVo symbolAssetVo = new SymbolAssetVo();
+        // 查询报价货币
+        @NotNull Long buyCoinId = marketDto.getBuyCoinId(); // 报价货币的Id
+        Account buyCoinAccount = getCoinAccount(buyCoinId, userId);
+        symbolAssetVo.setBuyAmount(buyCoinAccount.getBalanceAmount());
+        symbolAssetVo.setBuyLockAmount(buyCoinAccount.getFreezeAmount());
+        // 市场里面配置的值
+        symbolAssetVo.setBuyFeeRate(marketDto.getFeeBuy());
+        Coin buyCoin = coinService.getById(buyCoinId);
+        symbolAssetVo.setBuyUnit(buyCoin.getName());
+        // 查询基础汇报
+        @NotBlank Long sellCoinId = marketDto.getSellCoinId();
+        Account coinAccount = getCoinAccount(sellCoinId, userId);
+        symbolAssetVo.setSellAmount(coinAccount.getBalanceAmount());
+        symbolAssetVo.setSellLockAmount(coinAccount.getFreezeAmount());
+        // 市场里面配置的值
+        symbolAssetVo.setSellFeeRate(marketDto.getFeeSell());
+        Coin sellCoin = coinService.getById(sellCoinId);
+        symbolAssetVo.setSellUnit(sellCoin.getName());
+
+        return symbolAssetVo;
     }
 
     /**

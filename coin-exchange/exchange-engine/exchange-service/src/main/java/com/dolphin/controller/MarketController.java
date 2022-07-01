@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.Market;
 import com.dolphin.dto.MarketDto;
 import com.dolphin.feign.MarketServiceFeign;
+import com.dolphin.mappers.MarketDtoMappers;
 import com.dolphin.model.R;
 import com.dolphin.service.MarketService;
 import io.swagger.annotations.Api;
@@ -99,6 +100,12 @@ public class MarketController implements MarketServiceFeign {
     @Override
     public MarketDto findByCoinId(Long buyCoinId, Long sellCoinId) {
         MarketDto marketDto = marketService.findByCoinId(buyCoinId,sellCoinId);
-        return null;
+        return marketDto;
+    }
+
+    @Override
+    public MarketDto findBySymbol(String symbol) {
+        Market markerBySymbol = marketService.getMarkerBySymbol(symbol);
+        return MarketDtoMappers.INSTANCE.toConvertDto(markerBySymbol);
     }
 }

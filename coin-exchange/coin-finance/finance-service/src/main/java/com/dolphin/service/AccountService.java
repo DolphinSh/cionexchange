@@ -2,6 +2,7 @@ package com.dolphin.service;
 
 import com.dolphin.domain.Account;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.vo.SymbolAssetVo;
 import com.dolphin.vo.UserTotalAccountVo;
 
 import java.math.BigDecimal;
@@ -63,4 +64,12 @@ public interface AccountService extends IService<Account>{
      * @return
      */
     UserTotalAccountVo getUserTotalAccount(Long userId);
+
+    /**
+     * 统计用户交易对的资产
+     * @param symbol 交易对的Symbol
+     * @param userId 用户的Id
+     * @return
+     */
+    SymbolAssetVo getSymbolAssert(String symbol, Long userId);
 }
