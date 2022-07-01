@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import com.dolphin.domain.DepthItemVo;
 import com.dolphin.domain.Market;
 import com.dolphin.dto.MarketDto;
 import com.dolphin.feign.MarketServiceFeign;
 import com.dolphin.mappers.MarketDtoMappers;
 import com.dolphin.model.R;
 import com.dolphin.service.MarketService;
+import com.dolphin.vo.DepthsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,7 +24,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -107,5 +111,34 @@ public class MarketController implements MarketServiceFeign {
     public MarketDto findBySymbol(String symbol) {
         Market markerBySymbol = marketService.getMarkerBySymbol(symbol);
         return MarketDtoMappers.INSTANCE.toConvertDto(markerBySymbol);
+    }
+
+    @ApiOperation(value = "通过的交易对以及深度查询当前的市场的深度数据")
+    @GetMapping("/depth/{symbol}/{dept}")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "symbol", value = "交易对"),
+            @ApiImplicitParam(name = "dept", value = "深度类型"),
+    })
+    public R<DepthsVo> findDeptVosSymbol(@PathVariable("symbol") String symbol, String dept) {
+        // 交易市场
+        Market market = marketService.getMarkerBySymbol(symbol);
+
+        DepthsVo depthsVo = new DepthsVo();
+        depthsVo.setCnyPrice(market.getOpenPrice()); // CNY的价格
+        depthsVo.setPrice(market.getOpenPrice()); // GCN的价格
+        //TODO 模拟数据测试
+        depthsVo.setAsks(
+                Arrays.asList(
+                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
+                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
+                )
+        );
+        depthsVo.setBids(
+                Arrays.asList(
+                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
+                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
+                )
+        );
+        return R.ok(depthsVo);
     }
 }
