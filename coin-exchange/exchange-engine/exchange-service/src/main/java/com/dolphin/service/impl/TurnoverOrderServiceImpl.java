@@ -55,4 +55,22 @@ public class TurnoverOrderServiceImpl extends ServiceImpl<TurnoverOrderMapper, T
                 .eq(TurnoverOrder::getSellUserId, userId)
         );
     }
+
+    /**
+     * 查询成交记录
+     *
+     * @param symbol 交易对
+     * @return
+     */
+    @Override
+    public List<TurnoverOrder> findBySymbol(String symbol) {
+        List<TurnoverOrder> turnoverOrders = list(
+                new LambdaQueryWrapper<TurnoverOrder>()
+                        .eq(TurnoverOrder::getSymbol, symbol)
+                        .orderByDesc(TurnoverOrder::getCreated)
+                        .eq(TurnoverOrder::getStatus,1)
+                        .last("limit 60")
+        );
+        return turnoverOrders;
+    }
 }

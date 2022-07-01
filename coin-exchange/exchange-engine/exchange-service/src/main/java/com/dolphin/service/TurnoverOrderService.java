@@ -32,4 +32,11 @@ public interface TurnoverOrderService extends IService<TurnoverOrder>{
      * @return
      */
     List<TurnoverOrder> getSellTurnoverOrder(Long orderId,Long userId);
+
+    /**
+     * 查询成交记录
+     * @param symbol 交易对
+     * @return
+     */
+    List<TurnoverOrder> findBySymbol(String symbol);
 }

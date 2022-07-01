@@ -7,11 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import com.dolphin.domain.DepthItemVo;
 import com.dolphin.domain.Market;
+import com.dolphin.domain.TurnoverOrder;
 import com.dolphin.dto.MarketDto;
 import com.dolphin.feign.MarketServiceFeign;
 import com.dolphin.mappers.MarketDtoMappers;
 import com.dolphin.model.R;
 import com.dolphin.service.MarketService;
+import com.dolphin.service.TurnoverOrderService;
 import com.dolphin.vo.DepthsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -37,6 +39,8 @@ public class MarketController implements MarketServiceFeign {
     @Autowired
     private MarketService marketService;
 
+    @Autowired
+    private TurnoverOrderService turnoverOrderService;
 
     @GetMapping
     @ApiOperation(value = "交易市场的分页查询")
@@ -141,4 +145,12 @@ public class MarketController implements MarketServiceFeign {
         );
         return R.ok(depthsVo);
     }
+
+    @ApiOperation(value = "查询成交记录")
+    @GetMapping("/trades/{symbol}")
+    public R<List<TurnoverOrder>> findSymbolTurnoverOrder(@PathVariable("symbol") String symbol) {
+        List<TurnoverOrder> turnoverOrders = turnoverOrderService.findBySymbol(symbol);
+        return R.ok(turnoverOrders);
+    }
+
 }
