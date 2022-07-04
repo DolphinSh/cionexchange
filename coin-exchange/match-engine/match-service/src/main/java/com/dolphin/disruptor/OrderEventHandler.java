@@ -2,6 +2,7 @@ package com.dolphin.disruptor;
 
 
 
+import com.dolphin.model.OrderBooks;
 import com.lmax.disruptor.EventHandler;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 public class OrderEventHandler implements EventHandler<OrderEvent> {
+
+    private OrderBooks orderBooks;
+
+    private String symbol ;
+
+    public OrderEventHandler(OrderBooks orderBooks) {
+        this.orderBooks = orderBooks;
+        this.symbol =  this.orderBooks.getSymbol() ;
+    }
 
     @Override
     public void onEvent(OrderEvent orderEvent, long sequence, boolean endOfBatch) throws Exception {
