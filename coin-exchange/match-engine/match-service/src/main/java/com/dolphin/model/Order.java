@@ -1,6 +1,7 @@
 package com.dolphin.model;
 
 
+import com.dolphin.enums.OrderDirection;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -59,7 +60,7 @@ public class Order implements Serializable {
     /**
      * 订单的方向
      */
-    private Integer orderDirection;
+    private OrderDirection orderDirection;
 
     /**
      * 挂单的价格
