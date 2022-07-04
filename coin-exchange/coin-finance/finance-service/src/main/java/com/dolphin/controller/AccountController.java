@@ -1,6 +1,7 @@
 package com.dolphin.controller;
 
 import com.dolphin.domain.Account;
+import com.dolphin.feign.AccountServiceFeign;
 import com.dolphin.model.R;
 import com.dolphin.service.AccountService;
 import com.dolphin.vo.SymbolAssetVo;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/account")
 @Api(tags = "资产服务的控制器")
-public class AccountController {
+public class AccountController implements AccountServiceFeign {
 
     @Autowired
     private AccountService accountService;
@@ -51,5 +52,20 @@ public class AccountController {
         Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         SymbolAssetVo symbolAssetVo = accountService.getSymbolAssert(symbol, userId);
         return R.ok(symbolAssetVo);
+    }
+
+    /**
+     * 锁定用户的余额
+     *
+     * @param userId  用户的id
+     * @param coinId  币种的id
+     * @param mum     锁定的数量
+     * @param type    业务类型
+     * @param orderId 订单编号
+     * @param fee
+     */
+    @Override
+    public void lockUserAmount(Long userId, Long coinId, BigDecimal mum, String type, Long orderId, BigDecimal fee) {
+        accountService.lockUserAmount(userId, coinId, mum, type, orderId, fee);
     }
 }

@@ -24,7 +24,7 @@ public class EntrustOrder {
     /**
      * 订单ID
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id", type = IdType.AUTO)
     @ApiModelProperty(value="订单ID")
     private Long id;
 

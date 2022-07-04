@@ -17,6 +17,7 @@ C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\mai
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\service\TradeAreaService.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\service\EntrustOrderService.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\controller\MarketController.java
+C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\vo\DepthsVo.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\domain\TurnoverRecord.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\service\TurnoverRecordService.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\vo\TradeAreaMarketVo.java
@@ -27,6 +28,7 @@ C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\mai
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\mappers\MarketDtoMappers.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\vo\MergeDeptVo.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\ExchangeServiceApplication.java
+C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\param\OrderParam.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\controller\EntrustOrderController.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\service\impl\EntrustOrderServiceImpl.java
 C:\workspace\cionexchange\coin-exchange\exchange-engine\exchange-service\src\main\java\com\dolphin\service\impl\UserFavoriteMarketServiceImpl.java

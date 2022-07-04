@@ -15,6 +15,7 @@ com\dolphin\config\swagger\SwaggerAutoConfiguration.class
 com\dolphin\service\ConfigService.class
 com\dolphin\model\R.class
 com\dolphin\config\swagger\SwaggerProperties.class
+com\dolphin\domain\DepthItemVo.class
 com\dolphin\model\WebLog.class
 com\dolphin\config\jetcache\JetCacheConfig.class
 com\dolphin\service\impl\ConfigServiceImpl.class

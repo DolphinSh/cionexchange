@@ -3,6 +3,7 @@ package com.dolphin.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.EntrustOrder;
 import com.dolphin.model.R;
+import com.dolphin.param.OrderParam;
 import com.dolphin.service.EntrustOrderService;
 import com.dolphin.vo.TradeEntrustOrderVo;
 import io.swagger.annotations.Api;
@@ -58,4 +59,17 @@ public class EntrustOrderController {
         Page<TradeEntrustOrderVo> pageData = entrustOrderService.getEntrustOrder(page,symbol,userId) ;
         return R.ok(pageData) ;
     }
+
+    @PostMapping
+    @ApiOperation(value = "委托单的下单操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderParam",value = "orderParam json数据")
+    })
+    public R createEntrustOrder(@RequestBody OrderParam orderParam){
+        Long userId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()) ;
+        Boolean isOk = entrustOrderService.createEntrustOrder(userId,orderParam) ;
+        return isOk ? R.ok() :R.fail("创建失败") ;
+    }
+
+
 }

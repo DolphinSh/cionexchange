@@ -5,6 +5,7 @@ com\dolphin\controller\MarketController.class
 com\dolphin\mapper\TradeAreaMapper.class
 com\dolphin\service\impl\TurnoverRecordServiceImpl.class
 com\dolphin\config\IdConfig.class
+com\dolphin\mappers\MarketDtoMappersImpl.class
 com\dolphin\mapper\UserFavoriteMarketMapper.class
 com\dolphin\controller\TurnoverOrderController.class
 com\dolphin\service\impl\MarketServiceImpl.class
@@ -23,6 +24,7 @@ com\dolphin\domain\EntrustOrder.class
 com\dolphin\vo\TradeEntrustOrderVo.class
 com\dolphin\domain\TurnoverOrder.class
 com\dolphin\service\TurnoverOrderService.class
+com\dolphin\vo\DepthsVo.class
 com\dolphin\controller\TradeAreaController.class
 com\dolphin\mappers\MarketDtoMappers.class
 com\dolphin\vo\TradeAreaMarketVo.class
@@ -30,6 +32,7 @@ com\dolphin\vo\TradeMarketVo.class
 com\dolphin\service\impl\EntrustOrderServiceImpl.class
 com\dolphin\mapper\TurnoverOrderMapper.class
 com\dolphin\service\impl\UserFavoriteMarketServiceImpl.class
+com\dolphin\param\OrderParam.class
 com\dolphin\service\TurnoverRecordService.class
 com\dolphin\domain\TurnoverRecord.class
 com\dolphin\controller\EntrustOrderController.class

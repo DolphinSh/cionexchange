@@ -1,14 +1,21 @@
 package com.dolphin.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.domain.Market;
 import com.dolphin.domain.TurnoverOrder;
+import com.dolphin.feign.AccountServiceFeign;
+import com.dolphin.param.OrderParam;
+import com.dolphin.service.MarketService;
 import com.dolphin.service.TurnoverOrderService;
 import com.dolphin.vo.TradeEntrustOrderVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -25,6 +32,13 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
 
     @Autowired
     private TurnoverOrderService turnoverOrderService;
+
+    @Autowired
+    private MarketService marketService;
+
+    @Autowired
+    private AccountServiceFeign accountServiceFeign;
+
 
     /**
      * 查询用户的委托记录
@@ -99,6 +113,84 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
             tradeEntrustOrderVoPage.setRecords(tradeEntrustOrderVos);
         }
         return tradeEntrustOrderVoPage;
+    }
+
+    /**
+     * 委托单的下单操作
+     *
+     * @param userId
+     * @param orderParam
+     * @return
+     */
+    @Override
+    public Boolean createEntrustOrder(Long userId, OrderParam orderParam) {
+        // 1 层层校验
+        @NotBlank String symbol = orderParam.getSymbol();
+        Market markerBySymbol = marketService.getMarkerBySymbol(symbol);
+        if (markerBySymbol == null){
+            throw new IllegalArgumentException("您购买的交易对不存在");
+        }
+        //从交易对中得价格和数量
+        BigDecimal price = orderParam.getPrice().setScale(markerBySymbol.getPriceScale(), RoundingMode.HALF_UP);
+        BigDecimal volume = orderParam.getVolume().setScale(markerBySymbol.getNumScale(), RoundingMode.HALF_UP);
+        // 计算成交额度
+        BigDecimal mum = price.multiply(volume);
+        //交易数量的交易
+        @NotNull BigDecimal numMax = markerBySymbol.getNumMax();
+        @NotNull BigDecimal numMin = markerBySymbol.getNumMin();
+        //对交易数量范围进行校验
+        if (volume.compareTo(numMax) > 0 || volume.compareTo(numMin) < 0) {
+            throw new IllegalArgumentException("交易的数量不在范围内");
+        }
+        // 校验交易额
+        BigDecimal tradeMin = markerBySymbol.getTradeMin();
+        BigDecimal tradeMax = markerBySymbol.getTradeMax();
+        if (mum.compareTo(tradeMin) < 0 || mum.compareTo(tradeMax) > 0) {
+            throw new IllegalArgumentException("交易的额度不在范围内");
+        }
+        // 计算手续费
+        BigDecimal fee = BigDecimal.ZERO;
+        BigDecimal feeRate = BigDecimal.ZERO;
+        //买入卖出判断
+        @NotNull Integer type = orderParam.getType();
+        if (type == 1) { // 买入 buy
+            feeRate = markerBySymbol.getFeeBuy();
+            fee = mum.multiply(markerBySymbol.getFeeBuy());
+        } else { // 卖出 sell
+            feeRate = markerBySymbol.getFeeSell();
+            fee = mum.multiply(markerBySymbol.getFeeSell());
+        }
+        EntrustOrder entrustOrder = new EntrustOrder();
+        entrustOrder.setUserId(userId);
+        entrustOrder.setAmount(mum);
+        entrustOrder.setType(orderParam.getType().byteValue());
+        entrustOrder.setPrice(price);
+        entrustOrder.setVolume(volume);
+        entrustOrder.setFee(fee);
+        entrustOrder.setCreated(DateUtil.date());
+        entrustOrder.setStatus((byte) 0);
+        entrustOrder.setMarketId(markerBySymbol.getId());
+        entrustOrder.setMarketName(markerBySymbol.getName());
+        entrustOrder.setMarketType(markerBySymbol.getType());
+        entrustOrder.setSymbol(markerBySymbol.getSymbol());
+        entrustOrder.setFeeRate(feeRate);
+        entrustOrder.setDeal(BigDecimal.ZERO);
+        entrustOrder.setFreeze(entrustOrder.getAmount().add(entrustOrder.getFee())); // 冻结余额
+        boolean save = save(entrustOrder);
+        if (save){
+            // 用户余额的扣减
+            @NotNull Long coinId = null;
+            if (type == 1) { // 购买操作
+                coinId = markerBySymbol.getBuyCoinId();
+            } else {
+                coinId = markerBySymbol.getSellCoinId();
+            }
+            //锁定用户额度
+            if (entrustOrder.getType() == (byte) 1) {
+                accountServiceFeign.lockUserAmount(userId, coinId, entrustOrder.getFreeze(), "trade_create", entrustOrder.getId(), fee);
+            }
+        }
+        return save;
     }
 
     /**
