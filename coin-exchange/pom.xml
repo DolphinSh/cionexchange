@@ -54,6 +54,7 @@
         <swagger2.version>2.9.2</swagger2.version>
         <spring-bootstrap.version>3.0.4</spring-bootstrap.version>
         <csv.version>2.4.0</csv.version>
+        <affinity.version>3.1.7</affinity.version>
     </properties>
 
     <dependencies>
@@ -227,6 +228,11 @@
                 <groupId>net.sf.supercsv</groupId>
                 <artifactId>super-csv</artifactId>
                 <version>${csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>affinity</artifactId>
+                <version>${affinity.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
