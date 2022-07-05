@@ -9,3 +9,11 @@ spring:
       config:
         file-extension: yaml
         #去nacos-server 拉取配置文件exchange-service-dev.yaml
+    stream:
+      bindings:
+        order_out: {destination: order_in, content-type: application/plain}
+        cancel_order_in: {destination: cancel_order_out, content-type: application/plain, group: order-group, consumer.maxAttempts: 1}
+        exchange_trade_in: {destination: exchange_trades_out, content-type: application/plain, group: order-group, consumer.maxAttempts: 1}
+      rocketmq:
+        binder:
+          name-server: rocket-server:9876

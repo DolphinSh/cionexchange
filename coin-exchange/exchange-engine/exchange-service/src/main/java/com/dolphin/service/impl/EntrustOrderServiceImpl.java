@@ -3,6 +3,7 @@ package com.dolphin.service.impl;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.dolphin.config.rocket.Source;
 import com.dolphin.domain.Market;
 import com.dolphin.domain.TurnoverOrder;
 import com.dolphin.feign.AccountServiceFeign;
@@ -12,8 +13,9 @@ import com.dolphin.service.TurnoverOrderService;
 import com.dolphin.vo.TradeEntrustOrderVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -26,6 +28,7 @@ import com.dolphin.domain.EntrustOrder;
 import com.dolphin.mapper.EntrustOrderMapper;
 import com.dolphin.service.EntrustOrderService;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MimeTypeUtils;
 
 @Service
 public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, EntrustOrder> implements EntrustOrderService{
@@ -38,6 +41,9 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
 
     @Autowired
     private AccountServiceFeign accountServiceFeign;
+
+    @Autowired
+    private Source source;
 
 
     /**
@@ -188,6 +194,11 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
             //锁定用户额度
             if (entrustOrder.getType() == (byte) 1) {
                 accountServiceFeign.lockUserAmount(userId, coinId, entrustOrder.getFreeze(), "trade_create", entrustOrder.getId(), fee);
+                //发送到撮合系统里面
+                MessageBuilder<EntrustOrder> entrustOrderMessageBuilder = MessageBuilder.withPayload(entrustOrder).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+
+
+                source.outputMessage().send(entrustOrderMessageBuilder.build());
             }
         }
         return save;

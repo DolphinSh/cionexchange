@@ -6,12 +6,15 @@ import com.dolphin.domain.EntrustOrder;
 import com.dolphin.enums.OrderDirection;
 import com.dolphin.mapper.EntrustOrderMapper;
 import com.dolphin.model.Order;
+import com.dolphin.util.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+
+import static com.dolphin.util.BeanUtils.entrustOrder2Order;
 
 @Component
 public class DataLoaderCmdRunner implements CommandLineRunner {
@@ -33,26 +36,8 @@ public class DataLoaderCmdRunner implements CommandLineRunner {
             return;
         }
         for (EntrustOrder entrustOrder : entrustOrders) {
-            disruptorTemplate.onData( entrustOrder2Order(entrustOrder));
+            disruptorTemplate.onData(BeanUtils.entrustOrder2Order(entrustOrder));
         }
     }
 
-    /**
-     * 将EntrustOrder转成Order
-     * @param entrustOrder
-     * @return
-     */
-    private Order entrustOrder2Order(EntrustOrder entrustOrder) {
-        Order order = new Order();
-        order.setOrderId(entrustOrder.getId().toString());
-
-        order.setPrice(entrustOrder.getPrice());
-        order.setAmount(entrustOrder.getVolume().subtract(entrustOrder.getDeal())); // 交易的数量= 总数量- 已经成交的数量
-
-        order.setSymbol(entrustOrder.getSymbol());
-        order.setOrderDirection(OrderDirection.getOrderDirection(entrustOrder.getType().intValue()));
-        order.setTime(entrustOrder.getCreated().getTime());
-
-        return order ;
-    }
 }

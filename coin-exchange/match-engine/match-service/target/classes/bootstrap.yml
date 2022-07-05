@@ -18,7 +18,7 @@ spring:
         cancel_order_out: {destination: cancel_order_out, content-type: application/plain}
       rocketmq:
         binder:
-          name-server: rocketmq-server:9876
+          name-server: rocket-server:9876
   match:
     symbols:
       BTCGCN:

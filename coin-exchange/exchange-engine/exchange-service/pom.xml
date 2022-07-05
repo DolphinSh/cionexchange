@@ -41,6 +41,23 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
+        <!--spring-cloud-stream-rocketmq-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-rocketmq</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.integration</groupId>
+                    <artifactId>spring-integration-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--解决升级springcloud 的错误-->
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-core</artifactId>
+            <version>5.2.1.RELEASE</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
