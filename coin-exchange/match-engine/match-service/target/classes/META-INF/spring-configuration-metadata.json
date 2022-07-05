@@ -1,0 +1,35 @@
+{
+  "groups": [
+    {
+      "name": "spring.disruptor",
+      "type": "com.dolphin.disruptor.DisruptorProperties",
+      "sourceType": "com.dolphin.disruptor.DisruptorProperties"
+    },
+    {
+      "name": "spring.match",
+      "type": "com.dolphin.match.MatchEngineProperties",
+      "sourceType": "com.dolphin.match.MatchEngineProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.disruptor.multi-producer",
+      "type": "java.lang.Boolean",
+      "description": "是否为多生产者，如果是则通过 RingBuffer.createMultiProducer 创建一个多生产 的 RingBuffer， 否则通过 RingBuffer.createSingleProducer 创建一个单生产者的 RingBuffer",
+      "sourceType": "com.dolphin.disruptor.DisruptorProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.disruptor.ring-buffer-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.dolphin.disruptor.DisruptorProperties",
+      "defaultValue": 0
+    },
+    {
+      "name": "spring.match.symbols",
+      "type": "java.util.Map<java.lang.String,com.dolphin.match.MatchEngineProperties$CoinScale>",
+      "sourceType": "com.dolphin.match.MatchEngineProperties"
+    }
+  ],
+  "hints": []
+}

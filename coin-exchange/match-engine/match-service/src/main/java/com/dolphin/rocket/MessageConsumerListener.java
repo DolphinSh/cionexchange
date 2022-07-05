@@ -15,7 +15,7 @@ public class MessageConsumerListener {
     @Autowired
     private DisruptorTemplate disruptorTemplate;
 
-    @StreamListener(value = "order.in") // 与Sink中的input值一致
+    @StreamListener(value = "order_in") // 与Sink中的input值一致
     public void handleMessage(Order order){
         log.info("接收到了委托单:{}",order);
         disruptorTemplate.onData(order);

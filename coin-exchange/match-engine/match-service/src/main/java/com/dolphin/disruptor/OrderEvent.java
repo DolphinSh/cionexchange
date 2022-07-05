@@ -1,12 +1,12 @@
 package com.dolphin.disruptor;
 
-import javafx.event.Event;
+
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class OrderEvent extends Event implements Serializable {
+public class OrderEvent implements Serializable {
 
     private static final long serialVersionUID = 5516075349620653480L;
     /** 时间戳 */
