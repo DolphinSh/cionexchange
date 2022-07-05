@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 import java.util.Map;
 import java.util.Set;
 
@@ -32,8 +33,8 @@ public class MatchEngineAutoConfiguration {
             String symbol = entry.getKey();
             MatchEngineProperties.CoinScale value = entry.getValue();
             OrderBooks orderBooks = null;
-            if (value != null){
-                orderBooks = new OrderBooks(symbol,value.getCoinScale(),value.getBaseCoinScale());
+            if (value != null) {
+                orderBooks = new OrderBooks(symbol, value.getCoinScale(), value.getBaseCoinScale());
             } else {
                 orderBooks = new OrderBooks(symbol);
             }

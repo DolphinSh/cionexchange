@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 @ConfigurationProperties(prefix = "spring.match")
 public class MatchEngineProperties {
-
+    /**交易的信息对*/
     private Map<String,CoinScale> symbols;
 
     @Data

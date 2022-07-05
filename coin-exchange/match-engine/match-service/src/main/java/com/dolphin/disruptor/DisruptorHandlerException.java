@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * DisruptorHandler 的异常处理
  */
 @Slf4j
-public class DisruptorHandlerException implements ExceptionHandler<Object> {
+public class DisruptorHandlerException implements ExceptionHandler{
 
 
     @Override

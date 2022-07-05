@@ -18,7 +18,7 @@ public class DisruptorTemplate {
     }
 
     /**
-     * 我们使用DisruptorTemplate 时,就使用它的onData方法
+     * 使用DisruptorTemplate 时,就使用它的onData方法
      *
      * @param input
      */

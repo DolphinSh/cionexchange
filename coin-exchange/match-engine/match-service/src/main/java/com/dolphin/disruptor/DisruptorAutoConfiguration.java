@@ -56,8 +56,10 @@ public class DisruptorAutoConfiguration {
      * waitStrategy : 等待策略: 当我们ringBuffer 没有数据时,我们怎么等待
      */
     @Bean
-    public RingBuffer<OrderEvent> ringBuffer(EventFactory<OrderEvent> eventFactory,ThreadFactory threadFactory,
-                                             WaitStrategy waitStrategy,EventHandler<OrderEvent>[] eventHandlers){
+    public RingBuffer<OrderEvent> ringBuffer(EventFactory<OrderEvent> eventFactory,
+                                             ThreadFactory threadFactory,
+                                             WaitStrategy waitStrategy,
+                                             EventHandler<OrderEvent>[] eventHandlers){
         //1 构建disruptor
         Disruptor<OrderEvent> disruptor = null;
 

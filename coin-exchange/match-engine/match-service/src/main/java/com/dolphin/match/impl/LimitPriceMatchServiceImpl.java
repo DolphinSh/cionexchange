@@ -23,11 +23,11 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
     @Override
     public void match(OrderBooks orderBooks, Order order) {
         log.info("开始撮合！");
+        orderBooks.addOrder(order);
     }
     @Override
     public void afterPropertiesSet() throws Exception {
         MatchServiceFactory.addMatchService(MatchStrategy.LIMIT_PRICE,this);
     }
-
 
 }
