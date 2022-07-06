@@ -12,6 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -58,7 +59,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
             Iterator<Order> markerIterator = mergeMergeOrder.iterator();
             while (markerIterator.hasNext()) {
                 Order marker = markerIterator.next();
-                ExchangeTrade exchangeTrade = processMath(order, marker);
+                ExchangeTrade exchangeTrade = processMath(order, marker, orderBooks);
                 if (order.isCompleted()) {
                     completedOrders.add(order);
                     //退出循环挂单序列
@@ -76,7 +77,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
         }
 
         //4 若订单没有完成
-        if (order.getAmount().compareTo(order.getTradedAmount()) > 0){
+        if (order.getAmount().compareTo(order.getTradedAmount()) > 0) {
             orderBooks.addOrder(order);
         }
 
@@ -97,6 +98,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
     /**
      * 发送盘口数据，供前端进行数据更新
+     *
      * @param tradePlate
      */
     private void sendTradePlateData(TradePlate tradePlate) {
@@ -104,6 +106,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
     /**
      * 订单的完成
+     *
      * @param completedOrders
      */
     private void completedOrders(List<Order> completedOrders) {
@@ -111,6 +114,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
     /**
      * 处理订单记录
+     *
      * @param exchangeTrades
      */
     private void handlerExchangeTrades(List<ExchangeTrade> exchangeTrades) {
@@ -118,11 +122,62 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
     /**
      * 进行委托单的匹配撮合交易
+     *
      * @param tracker 吃单
-     * @param marker 挂单
+     * @param marker  挂单
      * @return 交易记录
      */
-    private ExchangeTrade processMath(Order tracker, Order marker) {
+    private ExchangeTrade processMath(Order tracker, Order marker, OrderBooks orderBooks) {
+        //1 定义交易的变量
+        //成交的价格
+        BigDecimal dealPrice = marker.getPrice();
+        //成交的数量
+        BigDecimal turnoverAmount = BigDecimal.ZERO;
+        //本次需要的数量
+        BigDecimal needAmount = calcTradeAmount(tracker);
+        //本次提供给你的数量
+        BigDecimal providerAmount = calcTradeAmount(tracker);
+
+        turnoverAmount = needAmount.compareTo(providerAmount) <= 0 ? needAmount : providerAmount;
+
+        if (turnoverAmount.compareTo(BigDecimal.ZERO) == 0) {
+            return null; //无法成交
+        }
+        //设置成交额度
+        tracker.setAmount(tracker.getTradedAmount().add(turnoverAmount));
+        BigDecimal takerTurnover = turnoverAmount.multiply(dealPrice).setScale(orderBooks.getCoinScale(), RoundingMode.HALF_UP);
+        tracker.setTurnover(takerTurnover);
+
+        marker.setTradedAmount(marker.getTradedAmount().add(turnoverAmount));
+        BigDecimal markerTurnover = turnoverAmount.multiply(dealPrice).setScale(orderBooks.getCoinScale(), RoundingMode.HALF_UP);
+        marker.setTurnover(markerTurnover);
+
+        ExchangeTrade exchangeTrade = new ExchangeTrade();
+        exchangeTrade.setAmount(turnoverAmount); //设置购买的数量
+        exchangeTrade.setPrice(dealPrice); //设置购买的价格
+        exchangeTrade.setTime(System.currentTimeMillis()); //设置交易时间
+        exchangeTrade.setSymbol(orderBooks.getSymbol());//设置交易对
+        exchangeTrade.setDirection(tracker.getOrderDirection());//设置交易的方向
+        exchangeTrade.setSellOrderId(tracker.getOrderId());//设置出售方的id
+        exchangeTrade.setBuyTurnover(tracker.getTurnover());//设置买房的id
+        exchangeTrade.setSellTurnover(marker.getTurnover());//设置卖方的交易额
+
+        if (tracker.getOrderDirection() == OrderDirection.BUY) {
+            orderBooks.getBuyTradePlate().remove(marker, turnoverAmount);
+        } else {
+            orderBooks.getSellTradePlate().remove(marker, turnoverAmount);
+        }
+        return exchangeTrade;
+    }
+
+    /**
+     * 计算本次实时交易额
+     *
+     * @param tracker
+     * @return
+     */
+    private BigDecimal calcTradeAmount(Order tracker) {
+        return tracker.getAmount().subtract(tracker.getTradedAmount());
     }
 
     @Override
