@@ -5,11 +5,17 @@ import com.dolphin.match.MatchService;
 import com.dolphin.match.MatchServiceFactory;
 import com.dolphin.match.MatchStrategy;
 import com.dolphin.model.*;
+import com.dolphin.rocket.Source;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.mvel2.ast.Or;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,6 +25,8 @@ import java.util.*;
 @Slf4j
 public class LimitPriceMatchServiceImpl implements MatchService, InitializingBean {
 
+    @Autowired
+    private Source source;
     /**
      * 执行撮合交易
      *
@@ -102,6 +110,10 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
      * @param tradePlate
      */
     private void sendTradePlateData(TradePlate tradePlate) {
+        Message<TradePlate> build = MessageBuilder.
+                withPayload(tradePlate).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+                .build();
+        source.plateOut().send(build);
     }
 
     /**
@@ -110,6 +122,10 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
      * @param completedOrders
      */
     private void completedOrders(List<Order> completedOrders) {
+        Message<List<Order>> build = MessageBuilder.
+                withPayload(completedOrders).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+                .build();
+        source.completedOrdersOut().send(build);
     }
 
     /**
@@ -118,6 +134,10 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
      * @param exchangeTrades
      */
     private void handlerExchangeTrades(List<ExchangeTrade> exchangeTrades) {
+        Message<List<ExchangeTrade>> build = MessageBuilder.
+                withPayload(exchangeTrades).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+                .build();
+        source.exchangeTradesOut().send(build);
     }
 
     /**
