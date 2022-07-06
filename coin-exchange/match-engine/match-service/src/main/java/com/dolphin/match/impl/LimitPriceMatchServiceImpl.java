@@ -182,6 +182,10 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
         exchangeTrade.setBuyTurnover(tracker.getTurnover());//设置买房的id
         exchangeTrade.setSellTurnover(marker.getTurnover());//设置卖方的交易额
 
+        /**
+         * 处理盘口
+         * 我们的委托单，是将挂单的数据做了一部分消耗
+         */
         if (tracker.getOrderDirection() == OrderDirection.BUY) {
             orderBooks.getBuyTradePlate().remove(marker, turnoverAmount);
         } else {
