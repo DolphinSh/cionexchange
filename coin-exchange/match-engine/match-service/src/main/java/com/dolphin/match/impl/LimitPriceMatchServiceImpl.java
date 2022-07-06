@@ -27,6 +27,7 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
     @Autowired
     private Source source;
+
     /**
      * 执行撮合交易
      *
@@ -91,7 +92,9 @@ public class LimitPriceMatchServiceImpl implements MatchService, InitializingBea
 
         //5 发送交易记录
         //处理交易记录
-        handlerExchangeTrades(exchangeTrades);
+        if (exchangeTrades.size() > 0) {
+            handlerExchangeTrades(exchangeTrades);
+        }
         if (completedOrders.size() > 0) {
             completedOrders(completedOrders);
             //发送盘口数据，更新盘口
