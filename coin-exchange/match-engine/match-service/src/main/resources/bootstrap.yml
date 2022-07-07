@@ -27,6 +27,22 @@ spring:
       ETHGCN:
         coinScale: 8
         baseCoinScale: 8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       FOFTGCN:
         coinScale: 8
         baseCoinScale: 8

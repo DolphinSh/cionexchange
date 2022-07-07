@@ -19,8 +19,15 @@ public class MessageConsumerListener {
 
     @StreamListener(value = "order_in") // 与Sink中的input值一致
     public void handleMessage(EntrustOrder entrustOrder){
-        Order order = BeanUtils.entrustOrder2Order(entrustOrder);
-        log.info("接收到了委托单:{}",order);
+        Order order = null;
+        if (entrustOrder.getStatus() == 2) { // 该单需要取消
+            order = new Order();
+            order.setOrderId(entrustOrder.getId().toString());
+            order.setCancelOrder(true);
+        } else {
+            order = BeanUtils.entrustOrder2Order(entrustOrder);
+        }
+        log.info("接收到了委托单:{}", order);
         disruptorTemplate.onData(order);
     }
 }

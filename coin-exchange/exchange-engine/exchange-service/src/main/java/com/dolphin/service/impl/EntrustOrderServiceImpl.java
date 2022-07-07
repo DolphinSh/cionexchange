@@ -194,12 +194,10 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
             //锁定用户额度
             if (entrustOrder.getType() == (byte) 1) {
                 accountServiceFeign.lockUserAmount(userId, coinId, entrustOrder.getFreeze(), "trade_create", entrustOrder.getId(), fee);
-                //发送到撮合系统里面
-                MessageBuilder<EntrustOrder> entrustOrderMessageBuilder = MessageBuilder.withPayload(entrustOrder).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
-
-
-                source.outputMessage().send(entrustOrderMessageBuilder.build());
             }
+            //发送到撮合系统里面
+            MessageBuilder<EntrustOrder> entrustOrderMessageBuilder = MessageBuilder.withPayload(entrustOrder).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON);
+            source.outputMessage().send(entrustOrderMessageBuilder.build());
         }
         return save;
     }

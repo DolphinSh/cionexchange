@@ -11,17 +11,17 @@ public class DisruptorHandlerException implements ExceptionHandler{
 
 
     @Override
-    public void handleEventException(Throwable throwable, long sequence, Object event) {
-        log.info("process data error sequence ==[{}] event==[{}] ,ex ==[{}]",throwable.getMessage(),sequence,event);
+    public void handleEventException(Throwable ex, long sequence, Object event) {
+        log.error("process data error sequence =={} event==[{}] ,ex ==[{}]",ex.getMessage(),sequence,event);
     }
 
     @Override
     public void handleOnStartException(Throwable ex) {
-        log.info("start disruptor error ==[{}]!",ex.getMessage());
+        log.error("start disruptor error ==[{}]!",ex.getMessage());
     }
 
     @Override
     public void handleOnShutdownException(Throwable ex) {
-        log.info("shutdown disruptor error ==[{}]!",ex.getMessage());
+        log.error("shutdown disruptor error ==[{}]!",ex.getMessage());
     }
 }

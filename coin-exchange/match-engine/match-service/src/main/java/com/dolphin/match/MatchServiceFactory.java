@@ -14,11 +14,17 @@ public class MatchServiceFactory {
      * @param matchStrategy
      * @param matchService
      */
-    public static void addMatchService(MatchStrategy matchStrategy,MatchService matchService){
-        matchServiceMap.put(matchStrategy, matchService);
+    public static  void addMatchService(MatchStrategy matchStrategy,MatchService matchService){
+        matchServiceMap.put(matchStrategy ,matchService ) ;
     }
 
+
+    /**
+     * 使用策略的名称获取具体的实现类
+     * @param matchStrategy
+     * @return
+     */
     public static MatchService getMatchService(MatchStrategy matchStrategy){
-        return matchServiceMap.get(matchStrategy);
+        return matchServiceMap.get(matchStrategy) ;
     }
 }

@@ -32,6 +32,11 @@
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.dolphin</groupId>
+            <artifactId>match-api</artifactId>
+            <version>1.0</version>
+        </dependency>
         <!--mapStruct依赖 高性能对象映射-->
         <dependency>
             <groupId>org.mapstruct</groupId>

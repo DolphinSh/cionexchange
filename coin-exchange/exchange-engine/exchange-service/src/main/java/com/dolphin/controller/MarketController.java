@@ -10,6 +10,7 @@ import com.dolphin.domain.Market;
 import com.dolphin.domain.TurnoverOrder;
 import com.dolphin.dto.MarketDto;
 import com.dolphin.feign.MarketServiceFeign;
+import com.dolphin.feign.OrderBooksFeignClient;
 import com.dolphin.mappers.MarketDtoMappers;
 import com.dolphin.model.R;
 import com.dolphin.service.MarketService;
@@ -41,6 +42,9 @@ public class MarketController implements MarketServiceFeign {
 
     @Autowired
     private TurnoverOrderService turnoverOrderService;
+
+    @Autowired
+    private OrderBooksFeignClient orderBooksFeignClient;
 
     @GetMapping
     @ApiOperation(value = "交易市场的分页查询")
@@ -130,19 +134,24 @@ public class MarketController implements MarketServiceFeign {
         DepthsVo depthsVo = new DepthsVo();
         depthsVo.setCnyPrice(market.getOpenPrice()); // CNY的价格
         depthsVo.setPrice(market.getOpenPrice()); // GCN的价格
-        //TODO 模拟数据测试
-        depthsVo.setAsks(
-                Arrays.asList(
-                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
-                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
-                )
-        );
-        depthsVo.setBids(
-                Arrays.asList(
-                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
-                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
-                )
-        );
+        Map<String, List<DepthItemVo>> depthMap = orderBooksFeignClient.querySymbolDepth(symbol);
+        if (!CollectionUtils.isEmpty(depthMap)){
+            depthsVo.setAsks(depthMap.get("asks"));
+            depthsVo.setBids(depthMap.get("bids"));
+        }
+//        //模拟数据测试
+//        depthsVo.setAsks(
+//                Arrays.asList(
+//                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
+//                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
+//                )
+//        );
+//        depthsVo.setBids(
+//                Arrays.asList(
+//                        new DepthItemVo(BigDecimal.valueOf(7.00000),BigDecimal.valueOf(100)),
+//                        new DepthItemVo(BigDecimal.valueOf(6.99999),BigDecimal.valueOf(200))
+//                )
+//        );
         return R.ok(depthsVo);
     }
 

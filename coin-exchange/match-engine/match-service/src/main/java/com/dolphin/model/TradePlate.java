@@ -8,8 +8,12 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * 交易的盘口数据,以后前端可以查询该数据
+ */
 @Data
 public class TradePlate {
+
     /**
      * 判断数据的详情
      */
@@ -42,7 +46,6 @@ public class TradePlate {
      * @param order
      */
     public void add(Order order) {
-        //判断方向
         if (order.getOrderDirection() != direction) {
             return;
         }
@@ -60,8 +63,8 @@ public class TradePlate {
                 // 还不能插入,往前走一步
                 continue;
             } else if (depthItemVo.getPrice().compareTo(order.getPrice()) == 0) {
-                    depthItemVo.setVolume(depthItemVo.getVolume().add(order.getAmount().subtract(order.getTradedAmount())));
-                    return;
+                depthItemVo.setVolume(depthItemVo.getVolume().add(order.getAmount().subtract(order.getTradedAmount())));
+                return;
             } else {
                 break; // 我就想插入 当前我就在第 i
             }
@@ -108,8 +111,6 @@ public class TradePlate {
                     iterator.remove(); // 若价格为 0 后,我们直接可以摘掉它
                 }
             }
-
         }
-
     }
 }

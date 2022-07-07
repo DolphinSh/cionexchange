@@ -134,7 +134,7 @@ public class OrderBooks {
     }
 
     /**
-     * 怎么取消一个订单
+     * 取消一个订单
      */
     public void cancelOrder(Order order) {
         TreeMap<BigDecimal, MergeOrder> currentLimitPrices = getCurrentLimitPrices(order.getOrderDirection());

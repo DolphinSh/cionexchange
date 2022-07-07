@@ -1,4 +1,0 @@
-com\dolphin\dto\UserBankDto.class
-com\dolphin\feign\UserBankServiceFeign.class
-com\dolphin\dto\UserDto.class
-com\dolphin\feign\UserServiceFeign.class
