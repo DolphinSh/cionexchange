@@ -26,4 +26,28 @@ public interface AccountServiceFeign {
      */
     @PostMapping("/lockUserAmount")
     void lockUserAmount(@RequestParam("userId") Long userId, @RequestParam("coinId")  Long coinId, @RequestParam("mum") BigDecimal mum, @RequestParam("type")String type, @RequestParam("orderId") Long orderId, @RequestParam("fee") BigDecimal fee);
+
+    /**
+     * 划转买入的账户余额
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    @PostMapping("/transferBuyAmount")
+    void transferBuyAmount(@RequestParam("fromUserId") Long fromUserId, @RequestParam("toUserId")Long toUserId, @RequestParam("coinId")Long coinId, @RequestParam("amount")BigDecimal amount,@RequestParam("businessType")String businessType, @RequestParam("orderId")Long orderId);
+
+    /**
+     *  划转出售的成功的账户余额
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    @PostMapping("/transferSellAmount")
+    void transferSellAmount(@RequestParam("fromUserId") Long fromUserId, @RequestParam("toUserId")Long toUserId, @RequestParam("coinId")Long coinId, @RequestParam("amount")BigDecimal amount,@RequestParam("businessType")String businessType, @RequestParam("orderId")Long orderId);
 }

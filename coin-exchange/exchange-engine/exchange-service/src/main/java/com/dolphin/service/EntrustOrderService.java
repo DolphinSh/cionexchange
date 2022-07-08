@@ -3,6 +3,7 @@ package com.dolphin.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dolphin.domain.EntrustOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.dolphin.domain.ExchangeTrade;
 import com.dolphin.param.OrderParam;
 import com.dolphin.vo.TradeEntrustOrderVo;
 
@@ -43,4 +44,10 @@ public interface EntrustOrderService extends IService<EntrustOrder>{
      * @return
      */
     Boolean createEntrustOrder(Long userId, OrderParam orderParam);
+
+    /**
+     * 更新委托单数据
+     * @param exchangeTrade
+     */
+    void doMatch(ExchangeTrade exchangeTrade);
 }

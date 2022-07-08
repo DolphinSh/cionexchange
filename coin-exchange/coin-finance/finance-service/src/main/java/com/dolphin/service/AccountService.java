@@ -72,4 +72,26 @@ public interface AccountService extends IService<Account>{
      * @return
      */
     SymbolAssetVo getSymbolAssert(String symbol, Long userId);
+
+    /**
+     * 划转买入的账户余额
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    void transferBuyAmount(Long fromUserId, Long toUserId, Long coinId, BigDecimal amount, String businessType, Long orderId);
+
+    /**
+     * 划转出售的成功的账户余额
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    void transferSellAmount(Long fromUserId, Long toUserId, Long coinId, BigDecimal amount, String businessType, Long orderId);
 }

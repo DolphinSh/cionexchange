@@ -152,4 +152,26 @@ public class AccountDetail {
     public static final String COL_REMARK = "remark";
 
     public static final String COL_CREATED = "created";
+
+    public AccountDetail(Long userId,
+                         Long coinId,
+                         Long accountId,
+                         Long refAccountId,
+                         Long orderId,
+                         Integer direction,
+                         String businessType,
+                         BigDecimal amount,
+                         BigDecimal fee,
+                         String remark) {
+        this.userId = userId;
+        this.coinId = coinId;
+        this.accountId = accountId;
+        this.refAccountId = refAccountId;
+        this.orderId = orderId;
+        this.direction = direction.byteValue();
+        this.businessType = businessType;
+        this.amount = amount;
+        this.fee = fee;
+        this.remark = remark;
+    }
 }

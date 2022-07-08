@@ -68,4 +68,34 @@ public class AccountController implements AccountServiceFeign {
     public void lockUserAmount(Long userId, Long coinId, BigDecimal mum, String type, Long orderId, BigDecimal fee) {
         accountService.lockUserAmount(userId, coinId, mum, type, orderId, fee);
     }
+
+    /**
+     * 划转买入的账户余额
+     *
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    @Override
+    public void transferBuyAmount(Long fromUserId, Long toUserId, Long coinId, BigDecimal amount, String businessType, Long orderId) {
+        accountService.transferBuyAmount(fromUserId, toUserId, coinId, amount, businessType, orderId);
+    }
+
+    /**
+     * 划转出售的成功的账户余额
+     *
+     * @param fromUserId
+     * @param toUserId
+     * @param coinId
+     * @param amount
+     * @param businessType
+     * @param orderId
+     */
+    @Override
+    public void transferSellAmount(Long fromUserId, Long toUserId, Long coinId, BigDecimal amount, String businessType, Long orderId) {
+        accountService.transferSellAmount(fromUserId, toUserId, coinId, amount, businessType, orderId);
+    }
 }
