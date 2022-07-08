@@ -36,4 +36,10 @@ public class ExchangeTradeListener {
             }
         }
     }
+
+    @Transactional
+    @StreamListener("cancel_order_in")
+    public void receiveCancelOrder(String orderId){
+        entrustOrderService.cancelEntrustOrderToDb(orderId);
+    }
 }

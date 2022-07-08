@@ -50,4 +50,16 @@ public interface EntrustOrderService extends IService<EntrustOrder>{
      * @param exchangeTrade
      */
     void doMatch(ExchangeTrade exchangeTrade);
+
+    /**
+     * 取消委托单
+     * @param orderId
+     */
+    void cancelEntrustOrder(Long orderId);
+
+    /**
+     * DB取消委托单
+     * @param orderId
+     */
+    void cancelEntrustOrderToDb(String orderId);
 }

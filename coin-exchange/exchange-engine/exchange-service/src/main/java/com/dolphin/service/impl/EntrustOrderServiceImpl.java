@@ -14,6 +14,7 @@ import com.dolphin.service.TurnoverOrderService;
 import com.dolphin.vo.TradeEntrustOrderVo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
@@ -226,8 +227,37 @@ public class EntrustOrderServiceImpl extends ServiceImpl<EntrustOrderMapper, Ent
         rollBackAccount(sellOrder, buyOrder, exchangeTrade, market);
     }
 
+    /**
+     * 取消委托单
+     *
+     * @param orderId
+     */
+    @Override
+    public void cancelEntrustOrder(Long orderId) {
+        // 取消委托单
+        // 1 将该委托单从撮合引擎里面的委托单账本里面移除
+        EntrustOrder entrustOrder = new EntrustOrder();
+        entrustOrder.setStatus((byte) 2);
+        entrustOrder.setId(orderId);
+        Message<EntrustOrder> message = org.springframework.integration.support.MessageBuilder.withPayload(entrustOrder).setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON).build();
+        source.outputMessage().send(message);
+    }
 
-
+    /**
+     * DB取消委托单
+     *
+     * @param orderId
+     */
+    @Override
+    public void cancelEntrustOrderToDb(String orderId) {
+        // 2 数据库的操作
+        if (org.springframework.util.StringUtils.hasText(orderId)) {
+            Long orderIdVal = Long.valueOf(orderId);
+            EntrustOrder entrustOrder = getById(orderId);
+            entrustOrder.setStatus((byte) 2);
+            updateById(entrustOrder);
+        }
+    }
 
 
     /**

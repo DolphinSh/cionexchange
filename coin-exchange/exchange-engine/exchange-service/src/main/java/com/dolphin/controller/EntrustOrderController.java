@@ -71,5 +71,13 @@ public class EntrustOrderController {
         return isOk ? R.ok() :R.fail("创建失败") ;
     }
 
-
+    @ApiOperation(value = "委托单的取消操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id" ,value = "委托单的id")
+    })
+    @DeleteMapping("/{id}")
+    public R deleteEntrustOrder(@PathVariable("id") Long orderId){
+        entrustOrderService.cancelEntrustOrder(orderId) ;
+        return R.ok("取消成功") ;
+    }
 }
